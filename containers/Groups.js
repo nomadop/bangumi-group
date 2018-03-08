@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, View, Text, FlatList, Image } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-native';
 import { parse } from 'himalaya';
@@ -14,10 +14,7 @@ import { addGroups, nextPage, reachEnd } from '../actions/groups';
 class Groups extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      error: { stack: [] },
-    };
-    this.fetching = false;
+    this.state = { fetching: false };
   }
 
   componentDidMount() {
@@ -26,18 +23,16 @@ class Groups extends React.Component {
 
   fetchNext = () => {
     const { currentPage, endReached } = this.props;
-    if (this.fetching || endReached) {
+    const { fetching } = this.state;
+    if (fetching || endReached) {
       return;
     }
 
-    this.fetching = true;
+    this.setState({ fetching: true });
     fetch(`http://bangumi.tv/group/category/all?page=${currentPage + 1}`)
       .then(response => response.text())
       .then(this.parseData)
-      .catch(error => {
-        console.log(error);
-        return this.setState({ error: JSON.stringify(error.message), stack: error.stack });
-      });
+      .catch(error => console.log(error));
   };
 
   parseData = (html) => {
@@ -56,7 +51,7 @@ class Groups extends React.Component {
 
     this.props.addGroups(groups);
     this.props.nextPage();
-    this.fetching = false;
+    this.setState({ fetching: false });
   };
 
   renderItem = ({ item }) => (
@@ -73,7 +68,7 @@ class Groups extends React.Component {
 
   render() {
     const { groups } = this.props;
-    console.log(groups);
+    const { fetching } = this.state;
     return (
       <View style={styles.container}>
         <NavigationBar />
@@ -81,8 +76,10 @@ class Groups extends React.Component {
           data={groups}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderItem}
-          onEndReached={this.fetchNext}
         />
+        <TouchableOpacity onPress={this.fetchNext} style={styles.more}>
+          {fetching ? <ActivityIndicator /> : <Text>More...</Text>}
+        </TouchableOpacity>
       </View>
     );
   }
@@ -116,6 +113,13 @@ const styles = StyleSheet.create({
     height: 48,
     marginRight: 8,
   },
+  more: {
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#ccc',
+  }
 });
 
 const mapStateToProps = createStructuredSelector({

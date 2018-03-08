@@ -12,11 +12,8 @@ import { getTopics, getCurrentPage, getEndReached, getTitle } from '../selectors
 import { addTopics, nextPage, reachEnd, setTitle } from '../actions/forums';
 
 class GroupForum extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      error: { stack: [] },
-    };
+  constructor(props) {
+    super(props);
     this.fetching = false;
   }
 
@@ -34,10 +31,7 @@ class GroupForum extends React.Component {
     fetch(`http://bangumi.tv/group/${match.params.name}/forum?page=${currentPage + 1}`)
       .then(response => response.text())
       .then(this.parseData)
-      .catch(error => {
-        console.log(error);
-        return this.setState({ error: JSON.stringify(error.message), stack: error.stack });
-      });
+      .catch(error => console.log(error));
   };
 
   parseData = (html) => {
