@@ -1,22 +1,23 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import { StyleSheet, View, Text, FlatList } from 'react-native';
+import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-native';
 import { parse } from 'himalaya';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import { search, text, hasClass, withTag, getAttribute } from '../utils/himalaya';
+import { getTopics, getCurrentPage, getEndReached, getTitle } from '../selectors/forums';
+import { addTopics, nextPage, reachEnd, setTitle } from '../actions/forums';
 
-export default class GroupForum extends React.Component {
+class GroupForum extends React.Component {
   constructor() {
     super();
     this.state = {
       error: { stack: [] },
-      topics: [],
-      currentPage: 0,
     };
     this.fetching = false;
-    this.endReached = false;
   }
 
   componentDidMount() {
@@ -24,9 +25,8 @@ export default class GroupForum extends React.Component {
   }
 
   fetchNext = () => {
-    const { match } = this.props;
-    const { currentPage } = this.state;
-    if (this.fetching || this.endReached) {
+    const { currentPage, endReached, match } = this.props;
+    if (this.fetching || endReached) {
       return;
     }
 
@@ -51,6 +51,7 @@ export default class GroupForum extends React.Component {
     //   lastpost: $(node).find('.lastpost').text(),
     // }));
     // this.setState({ topics });
+    const { match } = this.props;
     const json = parse(html);
     const title = text(search(json, [hasClass('SecondaryNavTitle')]));
     const topics = search(json, [hasClass('topic_list'), hasClass('topic')]).map(ele => ({
@@ -62,14 +63,13 @@ export default class GroupForum extends React.Component {
     }));
     console.log(json, topics);
     if (topics.length < 20) {
-      this.endReached = true;
+      this.props.reachEnd({ group: match.params.name });
     }
 
-    this.setState({
-      title,
-      topics: this.state.topics.concat(topics),
-      currentPage: this.state.currentPage + 1,
-    });
+    this.props.setTitle({ group: match.params.name, title });
+    this.props.addTopics({ group: match.params.name, topics });
+    this.props.nextPage({ group: match.params.name });
+
     this.fetching = false;
   };
 
@@ -87,10 +87,10 @@ export default class GroupForum extends React.Component {
   keyExtractor = (item) => _.last(item.link.split('/'));
 
   render() {
-    const { error, title, topics } = this.state;
+    const { title, topics, history } = this.props;
     return (
       <View style={styles.container}>
-        <NavigationBar title={title} onBack={() => this.props.history.goBack()} />
+        <NavigationBar title={title} onBack={() => history.goBack()} />
         <FlatList
           data={topics}
           keyExtractor={this.keyExtractor}
@@ -130,3 +130,20 @@ const styles = StyleSheet.create({
     width: 36,
   }
 });
+
+const mapStateToProps = createStructuredSelector({
+  topics: getTopics,
+  currentPage: getCurrentPage,
+  endReached: getEndReached,
+  title: getTitle,
+});
+
+
+const mapDispatchToProps = {
+  addTopics,
+  nextPage,
+  reachEnd,
+  setTitle,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(GroupForum);

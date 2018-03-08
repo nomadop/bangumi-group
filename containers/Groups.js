@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, View, Text, FlatList, Image } from 'react-native';
-import { Link } from 'react-router-native';
 import { createStructuredSelector } from 'reselect';
+import { Link } from 'react-router-native';
 import { parse } from 'himalaya';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import { search, text, hasClass, withTag, getAttribute, hasAttribute } from '../utils/himalaya';
-import { getGroups, getCurrentPage } from '../selectors/groups';
-import { addGroups, nextPage } from '../actions/groups';
+import { getGroups, getCurrentPage, getEndReached } from '../selectors/groups';
+import { addGroups, nextPage, reachEnd } from '../actions/groups';
 
 class Groups extends React.Component {
   constructor(props) {
@@ -18,7 +18,6 @@ class Groups extends React.Component {
       error: { stack: [] },
     };
     this.fetching = false;
-    this.endReached = false;
   }
 
   componentDidMount() {
@@ -26,8 +25,8 @@ class Groups extends React.Component {
   }
 
   fetchNext = () => {
-    const { currentPage } = this.props;
-    if (this.fetching || this.endReached) {
+    const { currentPage, endReached } = this.props;
+    if (this.fetching || endReached) {
       return;
     }
 
@@ -52,7 +51,7 @@ class Groups extends React.Component {
 
     console.log(json, groups);
     if (groups.length < 21) {
-      this.endReached = true;
+      this.props.reachEnd();
     }
 
     this.props.addGroups(groups);
@@ -122,12 +121,14 @@ const styles = StyleSheet.create({
 const mapStateToProps = createStructuredSelector({
   groups: getGroups,
   currentPage: getCurrentPage,
+  endReached: getEndReached,
 });
 
 
 const mapDispatchToProps = {
   addGroups,
   nextPage,
+  reachEnd,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Groups);
