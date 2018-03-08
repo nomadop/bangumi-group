@@ -1,19 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import { StyleSheet, View, Text, FlatList, Image } from 'react-native';
 import { Link } from 'react-router-native';
+import { createStructuredSelector } from 'reselect';
 import { parse } from 'himalaya';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import { search, text, hasClass, withTag, getAttribute, hasAttribute } from '../utils/himalaya';
+import { getGroups, getCurrentPage } from '../selectors/groups';
+import { addGroups, nextPage } from '../actions/groups';
 
-export default class Groups extends React.Component {
-  constructor() {
-    super();
+class Groups extends React.Component {
+  constructor(props) {
+    super(props);
     this.state = {
       error: { stack: [] },
-      groups: [],
-      currentPage: 0,
     };
     this.fetching = false;
     this.endReached = false;
@@ -24,7 +26,7 @@ export default class Groups extends React.Component {
   }
 
   fetchNext = () => {
-    const { currentPage } = this.state;
+    const { currentPage } = this.props;
     if (this.fetching || this.endReached) {
       return;
     }
@@ -53,10 +55,8 @@ export default class Groups extends React.Component {
       this.endReached = true;
     }
 
-    this.setState({
-      groups: this.state.groups.concat(groups),
-      currentPage: this.state.currentPage + 1,
-    });
+    this.props.addGroups(groups);
+    this.props.nextPage();
     this.fetching = false;
   };
 
@@ -73,7 +73,8 @@ export default class Groups extends React.Component {
   keyExtractor = (item) => _.last(item.link.split('/'));
 
   render() {
-    const { error, groups } = this.state;
+    const { groups } = this.props;
+    console.log(groups);
     return (
       <View style={styles.container}>
         <NavigationBar />
@@ -117,3 +118,16 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
 });
+
+const mapStateToProps = createStructuredSelector({
+  groups: getGroups,
+  currentPage: getCurrentPage,
+});
+
+
+const mapDispatchToProps = {
+  addGroups,
+  nextPage,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Groups);
