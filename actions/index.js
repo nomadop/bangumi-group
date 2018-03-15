@@ -1,9 +1,11 @@
 import { createActions } from 'redux-actions';
 
-import groupActions from './groups';
-import forumActions from './forums';
+import groupActionMap from './groups';
+import forumActionMap from './forums';
 
-module.exports = createActions({
-  groupActions,
-  forumActions,
+const actions = createActions({
+  groupActions: groupActionMap,
+  forumActions: forumActionMap,
 });
+
+export const { groupActions, forumActions } = actions;
