@@ -1,7 +1,5 @@
-import * as _ from 'lodash';
+import { fetchActionMap } from './common';
 
 export default {
-  ADD_GROUPS: _.identity,
-  NEXT_PAGE: _.identity,
-  REACH_END: _.identity,
+  FETCH_GROUPS: fetchActionMap,
 }
