@@ -3,68 +3,27 @@ import { connect } from 'react-redux'
 import { StyleSheet, View, Text, FlatList } from 'react-native';
 import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-native';
-import { parse } from 'himalaya';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { search, text, hasClass, withTag, getAttribute } from '../utils/himalaya';
 import { getTopics, getCurrentPage, getEndReached, getTitle } from '../selectors/forums';
 import { forumActions } from '../actions';
 
 class GroupForum extends React.Component {
-  constructor(props) {
-    super(props);
-    this.fetching = false;
-  }
-
   componentDidMount() {
     this.fetchNext();
   }
 
   fetchNext = () => {
-    const { currentPage, endReached, match } = this.props;
-    if (this.fetching || endReached) {
+    const { currentPage, endReached, match, fetching, fetchForum } = this.props;
+    if (fetching || endReached) {
       return;
     }
 
-    this.fetching = true;
-    fetch(`http://bangumi.tv/group/${match.params.name}/forum?page=${currentPage + 1}`)
-      .then(response => response.text())
-      .then(this.parseData)
-      .catch(error => console.log(error));
-  };
-
-  parseData = (html) => {
-    // const $ = cheerio.load(html);
-    // const $topics = $('.topic_list .topic');
-    // const topics = $topics.map((index, node) => ({
-    //   link: $(node).find('.subject a').attr('href'),
-    //   subject: $(node).find('.subject').text(),
-    //   author: $(node).find('.author').text(),
-    //   posts: +$(node).find('.posts').text(),
-    //   lastpost: $(node).find('.lastpost').text(),
-    // }));
-    // this.setState({ topics });
-    const { match } = this.props;
-    const json = parse(html);
-    const title = text(search(json, [hasClass('SecondaryNavTitle')]));
-    const topics = search(json, [hasClass('topic_list'), hasClass('topic')]).map(ele => ({
-      link: getAttribute(search(ele.children, [hasClass('subject'), withTag('a')])[0], 'href'),
-      subject: text(search(ele.children, [hasClass('subject')])),
-      author: text(search(ele.children, [hasClass('author')])),
-      posts: +text(search(ele.children, [hasClass('posts')])),
-      lastpost: text(search(ele.children, [hasClass('lastpost')])),
-    }));
-    console.log(json, topics);
-    if (topics.length < 20) {
-      this.props.reachEnd({ group: match.params.name });
-    }
-
-    this.props.setTitle({ group: match.params.name, title });
-    this.props.addTopics({ group: match.params.name, topics });
-    this.props.nextPage({ group: match.params.name });
-
-    this.fetching = false;
+    fetchForum({
+      group: match.params.name,
+      page: currentPage + 1,
+    });
   };
 
   renderItem = ({ item }) => (
@@ -134,7 +93,7 @@ const mapStateToProps = createStructuredSelector({
 
 
 const mapDispatchToProps = {
-  ...forumActions,
+  fetchForum: forumActions.fetchForum.start,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupForum);

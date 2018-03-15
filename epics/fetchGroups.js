@@ -1,6 +1,6 @@
 import { groupActions } from '../actions';
-import { parse } from 'himalaya';
 import { Observable } from 'rxjs/Observable';
+import { parse } from 'himalaya';
 
 import { search, text, hasClass, withTag, getAttribute, hasAttribute } from '../utils/himalaya';
 
@@ -16,7 +16,7 @@ const parseData = (html) => {
 };
 
 export default action$ => action$
-  .ofType(groupActions.fetchGroups.start.toString())
+  .ofType(groupActions.fetchGroups.start)
   .do(action => console.log('receive', action))
   .distinctUntilChanged()
   .switchMap(({ payload }) =>
@@ -25,7 +25,7 @@ export default action$ => action$
         const groups = parseData(html);
         return groupActions.fetchGroups.done({
           groups,
-          currentPage: payload + 1,
+          currentPage: payload,
           endReached: groups.length < 21,
         });
       })
