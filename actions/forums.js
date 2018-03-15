@@ -1,9 +1,8 @@
-import { createAction } from 'redux-actions';
+import * as _ from 'lodash';
 
-export const addTopics = createAction('ADD-TOPICS');
-
-export const nextPage = createAction('TOPICS-NEXT-PAGE');
-
-export const reachEnd = createAction('TOPICS-REACH-END');
-
-export const setTitle = createAction('TOPICS-SET-TITLE');
+export default {
+  ADD_TOPICS: _.identity,
+  NEXT_PAGE: _.identity,
+  REACH_END: _.identity,
+  SET_TITLE: _.identity,
+}

@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import NavigationBar from '../components/NavigationBar';
 import { search, text, hasClass, withTag, getAttribute } from '../utils/himalaya';
 import { getTopics, getCurrentPage, getEndReached, getTitle } from '../selectors/forums';
-import { addTopics, nextPage, reachEnd, setTitle } from '../actions/forums';
+import { forumActions } from '../actions';
 
 class GroupForum extends React.Component {
   constructor(props) {
@@ -134,10 +134,7 @@ const mapStateToProps = createStructuredSelector({
 
 
 const mapDispatchToProps = {
-  addTopics,
-  nextPage,
-  reachEnd,
-  setTitle,
+  ...forumActions,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupForum);

@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import NavigationBar from '../components/NavigationBar';
 import { search, text, hasClass, withTag, getAttribute, hasAttribute } from '../utils/himalaya';
 import { getGroups, getCurrentPage, getEndReached } from '../selectors/groups';
-import { addGroups, nextPage, reachEnd } from '../actions/groups';
+import { groupActions } from '../actions';
 
 class Groups extends React.Component {
   constructor(props) {
@@ -130,9 +130,7 @@ const mapStateToProps = createStructuredSelector({
 
 
 const mapDispatchToProps = {
-  addGroups,
-  nextPage,
-  reachEnd,
+  ...groupActions,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Groups);

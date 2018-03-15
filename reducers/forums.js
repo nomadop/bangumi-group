@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
-import * as forumActions from '../actions/forums';
+import { forumActions } from '../actions';
 import * as _ from 'lodash';
 
 const topics = handleActions({

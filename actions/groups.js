@@ -1,7 +1,7 @@
-import { createAction } from 'redux-actions';
+import * as _ from 'lodash';
 
-export const addGroups = createAction('ADD-GROUPS');
-
-export const nextPage = createAction('GROUPS-NEXT-PAGE');
-
-export const reachEnd = createAction('GROUPS-REACH-END');
+export default {
+  ADD_GROUPS: _.identity,
+  NEXT_PAGE: _.identity,
+  REACH_END: _.identity,
+}
