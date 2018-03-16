@@ -11,7 +11,10 @@ import { groupActions } from '../actions';
 
 class Groups extends React.Component {
   componentDidMount() {
-    this.fetchNext();
+    const { currentPage } = this.props;
+    if (currentPage === 0) {
+      this.fetchNext();
+    }
   }
 
   fetchNext = () => {
@@ -99,7 +102,7 @@ const mapStateToProps = createStructuredSelector({
 
 
 const mapDispatchToProps = {
-  fetchGroups: groupActions.fetchGroups.start,
+  fetchGroups: groupActions.fetch.start,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Groups);

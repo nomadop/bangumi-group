@@ -93,7 +93,7 @@ const mapStateToProps = createStructuredSelector({
 
 
 const mapDispatchToProps = {
-  fetchForum: forumActions.fetchForum.start,
+  fetchForum: forumActions.fetch.start,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupForum);

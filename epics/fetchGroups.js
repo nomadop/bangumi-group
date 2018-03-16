@@ -16,20 +16,20 @@ const parseData = (html) => {
 };
 
 export default action$ => action$
-  .ofType(groupActions.fetchGroups.start)
+  .ofType(groupActions.fetch.start)
   .do(action => console.log('receive', action))
   .distinctUntilChanged()
   .switchMap(({ payload }) =>
     Observable.from(fetch(`http://bangumi.tv/group/category/all?page=${payload}`).then(response => response.text()))
       .map(html => {
         const groups = parseData(html);
-        return groupActions.fetchGroups.done({
+        return groupActions.fetch.done({
           groups,
           currentPage: payload,
           endReached: groups.length < 21,
         });
       })
-      .catch(error => Observable.of(groupActions.fetchGroups.fail(error)))
+      .catch(error => Observable.of(groupActions.fetch.fail(error)))
   )
   .do(action => console.log('send', action))
   .catch(error => {

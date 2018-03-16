@@ -19,21 +19,21 @@ const parseData = (html) => {
 };
 
 export default action$ => action$
-  .ofType(forumActions.fetchForum.start)
+  .ofType(forumActions.fetch.start)
   .distinctUntilChanged(_.isEqual)
   .do(action => console.log('receive', action))
   .switchMap(({ payload }) =>
     Observable.from(fetch(`http://bangumi.tv/group/${payload.group}/forum?page=${payload.page}`).then(response => response.text()))
       .map(html => {
         const forum = parseData(html);
-        return forumActions.fetchForum.done({
+        return forumActions.fetch.done({
           ...forum,
           group: payload.group,
           currentPage: payload.page,
           endReached: forum.topics.length < 20,
         });
       })
-      .catch(error => Observable.of(forumActions.fetchForum.fail(error)))
+      .catch(error => Observable.of(forumActions.fetch.fail(error)))
   )
   .do(action => console.log('send', action))
   .catch(error => {
