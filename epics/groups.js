@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 
 import { groupActions } from '../actions';
-import { fetchGroups } from '../utils/apis';
+import { fetchGroups } from '../utils/api';
 
 const fetchEpic = action$ => action$
   .ofType(groupActions.fetch.start)
