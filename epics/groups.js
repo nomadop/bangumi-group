@@ -14,11 +14,7 @@ const fetchEpic = action$ => action$
         endReached: groups.length < 21,
       }))
       .catch(error => Observable.of(groupActions.fetch.fail(error)))
-  )
-  .catch(error => {
-    console.log(error);
-    return Observable.empty();
-  });
+  );
 
 const refreshEpic = action$ => action$
   .ofType(groupActions.refresh.start)
@@ -30,10 +26,6 @@ const refreshEpic = action$ => action$
         endReached: groups.length < 21,
       }))
       .catch(error => Observable.of(groupActions.refresh.fail(error)))
-  )
-  .catch(error => {
-    console.log(error);
-    return Observable.empty();
-  });
+  );
 
 export default [fetchEpic, refreshEpic];

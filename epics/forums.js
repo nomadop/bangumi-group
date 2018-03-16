@@ -7,7 +7,6 @@ import { fetchForum } from '../utils/api';
 const fetchEpic = action$ => action$
   .ofType(forumActions.fetch.start)
   .distinctUntilChanged(_.isEqual)
-  .do(action => console.log('receive', action))
   .switchMap(({ payload }) =>
     Observable.from(fetchForum(payload.group, payload.page))
       .map(forum => forumActions.fetch.done({
@@ -17,12 +16,7 @@ const fetchEpic = action$ => action$
         endReached: forum.topics.length < 20,
       }))
       .catch(error => Observable.of(forumActions.fetch.fail(error)))
-  )
-  .do(action => console.log('send', action))
-  .catch(error => {
-    console.log(error);
-    return Observable.empty();
-  });
+  );
 
 const refreshEpic = action$ => action$
   .ofType(forumActions.refresh.start)
@@ -35,10 +29,6 @@ const refreshEpic = action$ => action$
         endReached: forum.topics.length < 20,
       }))
       .catch(error => Observable.of(forumActions.refresh.fail(error)))
-  )
-  .catch(error => {
-    console.log(error);
-    return Observable.empty();
-  });
+  );
 
 export default [fetchEpic, refreshEpic];
