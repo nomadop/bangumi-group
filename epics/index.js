@@ -1,6 +1,6 @@
 import { combineEpics } from 'redux-observable';
 
-import fetchGroups from './fetchGroups';
-import fetchForum from './fetchForum';
+import { fetchGroups, refreshGroups } from './groups';
+import { fetchForum, refreshForum } from './forums';
 
-export default combineEpics(fetchGroups, fetchForum);
+export default combineEpics(fetchGroups, refreshGroups, fetchForum, refreshForum);

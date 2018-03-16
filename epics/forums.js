@@ -18,7 +18,7 @@ const parseData = (html) => {
   return { title, topics };
 };
 
-export default action$ => action$
+export const fetchForum = action$ => action$
   .ofType(forumActions.fetch.start)
   .distinctUntilChanged(_.isEqual)
   .do(action => console.log('receive', action))
@@ -39,4 +39,24 @@ export default action$ => action$
   .catch(error => {
     console.log(error);
     return Observable.empty();
-  })
+  });
+
+export const refreshForum = action$ => action$
+  .ofType(forumActions.refresh.start)
+  .switchMap(({ payload }) =>
+    Observable.from(fetch(`http://bangumi.tv/group/${payload}/forum?page=1`).then(response => response.text()))
+      .map(html => {
+        const forum = parseData(html);
+        return forumActions.refresh.done({
+          ...forum,
+          group: payload,
+          currentPage: 1,
+          endReached: forum.topics.length < 20,
+        });
+      })
+      .catch(error => Observable.of(forumActions.refresh.fail(error)))
+  )
+  .catch(error => {
+    console.log(error);
+    return Observable.empty();
+  });

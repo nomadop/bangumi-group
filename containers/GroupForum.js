@@ -6,7 +6,7 @@ import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { getTopics, getCurrentPage, getEndReached, getTitle } from '../selectors/forums';
+import { getTopics, getCurrentPage, getEndReached, getTitle, getRefreshing } from '../selectors/forums';
 import { forumActions } from '../actions';
 
 class GroupForum extends React.Component {
@@ -26,6 +26,11 @@ class GroupForum extends React.Component {
     });
   };
 
+  refreshForum = () => {
+    const { match, refreshForum } = this.props;
+    refreshForum(match.params.name);
+  };
+
   renderItem = ({ item }) => (
     <Link to={item.link}>
       <View style={styles.item}>
@@ -40,7 +45,7 @@ class GroupForum extends React.Component {
   keyExtractor = (item) => _.last(item.link.split('/'));
 
   render() {
-    const { title, topics, history } = this.props;
+    const { title, topics, history, refreshing } = this.props;
     return (
       <View style={styles.container}>
         <NavigationBar title={title} onBack={() => history.goBack()} />
@@ -49,6 +54,8 @@ class GroupForum extends React.Component {
           keyExtractor={this.keyExtractor}
           renderItem={this.renderItem}
           onEndReached={this.fetchNext}
+          onRefresh={this.refreshForum}
+          refreshing={refreshing}
         />
       </View>
     );
@@ -89,11 +96,13 @@ const mapStateToProps = createStructuredSelector({
   currentPage: getCurrentPage,
   endReached: getEndReached,
   title: getTitle,
+  refreshing: getRefreshing,
 });
 
 
 const mapDispatchToProps = {
   fetchForum: forumActions.fetch.start,
+  refreshForum: forumActions.refresh.start,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupForum);

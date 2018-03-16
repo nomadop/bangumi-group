@@ -10,3 +10,5 @@ export const getCurrentPage = createSelector([getGroupState], state => state.cur
 export const getEndReached = createSelector([getGroupState], state => state.endReached);
 
 export const getTitle = createSelector([getGroupState], state => state.title);
+
+export const getRefreshing = createSelector([getGroupState], state => state.refreshing);

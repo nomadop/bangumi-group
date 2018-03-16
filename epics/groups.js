@@ -15,7 +15,7 @@ const parseData = (html) => {
     }));
 };
 
-export default action$ => action$
+export const fetchGroups = action$ => action$
   .ofType(groupActions.fetch.start)
   .do(action => console.log('receive', action))
   .distinctUntilChanged()
@@ -35,4 +35,23 @@ export default action$ => action$
   .catch(error => {
     console.log(error);
     return Observable.empty();
-  })
+  });
+
+export const refreshGroups = action$ => action$
+  .ofType(groupActions.refresh.start)
+  .switchMap(() =>
+    Observable.from(fetch(`http://bangumi.tv/group/category/all?page=1`).then(response => response.text()))
+      .map(html => {
+        const groups = parseData(html);
+        return groupActions.refresh.done({
+          groups,
+          currentPage: 1,
+          endReached: groups.length < 21,
+        });
+      })
+      .catch(error => Observable.of(groupActions.refresh.fail(error)))
+  )
+  .catch(error => {
+    console.log(error);
+    return Observable.empty();
+  });

@@ -6,7 +6,7 @@ import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { getGroups, getCurrentPage, getEndReached, getFetching } from '../selectors/groups';
+import { getGroups, getCurrentPage, getEndReached, getFetching, getRefreshing } from '../selectors/groups';
 import { groupActions } from '../actions';
 
 class Groups extends React.Component {
@@ -39,7 +39,7 @@ class Groups extends React.Component {
   keyExtractor = (item) => _.last(item.link.split('/'));
 
   render() {
-    const { groups, fetching } = this.props;
+    const { groups, fetching, refreshing, refreshGroups } = this.props;
     return (
       <View style={styles.container}>
         <NavigationBar />
@@ -47,9 +47,11 @@ class Groups extends React.Component {
           data={groups}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderItem}
+          onRefresh={refreshGroups}
+          refreshing={refreshing}
         />
         <TouchableOpacity onPress={this.fetchNext} style={styles.more}>
-          {fetching ? <ActivityIndicator /> : <Text>More...</Text>}
+          {(fetching || refreshing) ? <ActivityIndicator /> : <Text>More...</Text>}
         </TouchableOpacity>
       </View>
     );
@@ -98,11 +100,13 @@ const mapStateToProps = createStructuredSelector({
   currentPage: getCurrentPage,
   endReached: getEndReached,
   fetching: getFetching,
+  refreshing: getRefreshing,
 });
 
 
 const mapDispatchToProps = {
   fetchGroups: groupActions.fetch.start,
+  refreshGroups: groupActions.refresh.start,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Groups);
