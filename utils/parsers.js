@@ -13,7 +13,7 @@ export const parseGroups = (html) => {
     }));
 };
 
-export const parseTopics = (html) => {
+export const parseForum = (html) => {
   const json = parse(html);
   const title = text(search(json, [hasClass('SecondaryNavTitle')]));
   const topics = search(json, [hasClass('topic_list'), hasClass('topic')]).map(ele => ({
