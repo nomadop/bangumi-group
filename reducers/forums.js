@@ -22,15 +22,21 @@ const title = handleActions({
   [forumActions.fetch.done]: usePayloadPath('title'),
 }, '');
 
-const fetching = handleFetchAction(forumActions.fetch);
+export const forumReducer = combineReducers({ topics, currentPage, endReached, title });
 
-const refreshing = handleFetchAction(forumActions.refresh);
-
-export const forumReducer = combineReducers({ topics, currentPage, endReached, title, fetching, refreshing });
-
-export default handleActions({
+const forums = handleActions({
   [combineActions(..._.values(forumActions.fetch), ..._.values(forumActions.refresh))]: (state, action) => ({
     ...state,
     [action.payload.group]: forumReducer(state[action.payload.group], action),
   }),
 }, {});
+
+const fetching = handleFetchAction(forumActions.fetch);
+
+const refreshing = handleFetchAction(forumActions.refresh);
+
+export default combineReducers({
+  forums,
+  fetching,
+  refreshing,
+});
