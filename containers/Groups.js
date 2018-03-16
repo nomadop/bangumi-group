@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
   },
   feed: {
     paddingRight: 8,
+    fontSize: 12,
     width: 72,
   },
   image: {

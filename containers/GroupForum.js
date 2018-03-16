@@ -37,7 +37,7 @@ class GroupForum extends React.Component {
         <Text style={styles.subject}>{item.subject}</Text>
         <Text style={styles.author}>{item.author}</Text>
         <Text style={styles.posts}>{item.posts}</Text>
-        <Text>{item.lastpost}</Text>
+        <Text style={styles.lastpost}>{item.lastpost}</Text>
       </View>
     </Link>
   );
@@ -87,8 +87,15 @@ const styles = StyleSheet.create({
   },
   posts: {
     paddingRight: 8,
-    width: 36,
-  }
+    fontSize: 12,
+    color: '#999',
+    width: 30,
+  },
+  lastpost: {
+    fontSize: 12,
+    color: '#999',
+    width: 64,
+  },
 });
 
 const mapStateToProps = createStructuredSelector({
