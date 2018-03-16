@@ -1,29 +1,25 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
+
+import { usePayloadPath, handleFetchAction } from './common';
 import { groupActions } from '../actions';
 
 const groups = handleActions({
   [groupActions.fetch.done]: (state, { payload }) => state.concat(payload.groups),
-  [groupActions.refresh.done]: (state, { payload }) => payload.groups,
+  [groupActions.refresh.done]: usePayloadPath('groups'),
 }, []);
 
 const currentPage = handleActions({
-  [combineActions(groupActions.fetch.done, groupActions.refresh.done)]: (state, { payload }) => payload.currentPage,
+  [combineActions(groupActions.fetch.done, groupActions.refresh.done)]: usePayloadPath('currentPage'),
 }, 0);
 
 const endReached = handleActions({
-  [combineActions(groupActions.fetch.done, groupActions.refresh.done)]: (state, { payload }) => payload.endReached,
+  [combineActions(groupActions.fetch.done, groupActions.refresh.done)]: usePayloadPath('endReached'),
 }, false);
 
-const fetching = handleActions({
-  [groupActions.fetch.start]: () => true,
-  [combineActions(groupActions.fetch.done, groupActions.fetch.fail)]: () => false,
-}, false);
+const fetching = handleFetchAction(groupActions.fetch);
 
-const refreshing = handleActions({
-  [groupActions.refresh.start]: () => true,
-  [combineActions(groupActions.refresh.done, groupActions.refresh.fail)]: () => false,
-}, false);
+const refreshing = handleFetchAction(groupActions.refresh);
 
 export default combineReducers({
   groups,

@@ -1,34 +1,30 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
-import { forumActions } from '../actions';
 import * as _ from 'lodash';
+
+import { usePayloadPath, handleFetchAction } from './common';
+import { forumActions } from '../actions';
 
 const topics = handleActions({
   [forumActions.fetch.done]: (state, { payload }) => state.concat(payload.topics),
-  [forumActions.refresh.done]: (state, { payload }) => payload.topics,
+  [forumActions.refresh.done]: usePayloadPath('topics'),
 }, []);
 
 const currentPage = handleActions({
-  [combineActions(forumActions.fetch.done, forumActions.refresh.done)]: (state, { payload } ) => payload.currentPage,
+  [combineActions(forumActions.fetch.done, forumActions.refresh.done)]: usePayloadPath('currentPage'),
 }, 0);
 
 const endReached = handleActions({
-  [combineActions(forumActions.fetch.done, forumActions.refresh.done)]: (state, { payload } ) => payload.endReached,
+  [combineActions(forumActions.fetch.done, forumActions.refresh.done)]: usePayloadPath('endReached'),
 }, false);
 
 const title = handleActions({
-  [forumActions.fetch.done]: (state, { payload } ) => payload.title,
+  [forumActions.fetch.done]: usePayloadPath('title'),
 }, '');
 
-const fetching = handleActions({
-  [forumActions.fetch.start]: () => true,
-  [combineActions(forumActions.fetch.done, forumActions.fetch.fail)]: () => false,
-}, false);
+const fetching = handleFetchAction(forumActions.fetch);
 
-const refreshing = handleActions({
-  [forumActions.refresh.start]: () => true,
-  [combineActions(forumActions.refresh.done, forumActions.refresh.fail)]: () => false,
-}, false);
+const refreshing = handleFetchAction(forumActions.refresh);
 
 export const forumReducer = combineReducers({ topics, currentPage, endReached, title, fetching, refreshing });
 
