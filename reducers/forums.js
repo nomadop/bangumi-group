@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
-import * as _ from 'lodash';
 
 import { usePayloadPath, handleFetchAction } from './common';
 import { forumActions } from '../actions';
+
+const receiveForum = combineActions(forumActions.fetch.done, forumActions.refresh.done);
 
 const topics = handleActions({
   [forumActions.fetch.done]: (state, { payload }) => state.concat(payload.topics),
@@ -11,21 +12,21 @@ const topics = handleActions({
 }, []);
 
 const currentPage = handleActions({
-  [combineActions(forumActions.fetch.done, forumActions.refresh.done)]: usePayloadPath('currentPage'),
+  [receiveForum]: usePayloadPath('currentPage'),
 }, 0);
 
 const endReached = handleActions({
-  [combineActions(forumActions.fetch.done, forumActions.refresh.done)]: usePayloadPath('endReached'),
+  [receiveForum]: usePayloadPath('endReached'),
 }, false);
 
 const title = handleActions({
-  [forumActions.fetch.done]: usePayloadPath('title'),
+  [receiveForum]: usePayloadPath('title'),
 }, '');
 
 export const forumReducer = combineReducers({ topics, currentPage, endReached, title });
 
 const forums = handleActions({
-  [combineActions(..._.values(forumActions.fetch), ..._.values(forumActions.refresh))]: (state, action) => ({
+  [receiveForum]: (state, action) => ({
     ...state,
     [action.payload.group]: forumReducer(state[action.payload.group], action),
   }),
