@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, RefreshControl } from 'react-native';
 import { createStructuredSelector } from 'reselect';
 
 import NavigationBar from '../components/NavigationBar';
@@ -12,6 +12,11 @@ class Topic extends React.Component {
     const { match, fetchTopic } = this.props;
     fetchTopic(match.params.id);
   }
+
+  refreshTopic = () => {
+    const { match, refreshTopic } = this.props;
+    refreshTopic(match.params.id);
+  };
 
   renderSubReply = (subReply) => {
     return (
@@ -31,13 +36,16 @@ class Topic extends React.Component {
   };
 
   render() {
-    const { content, reply } = this.props;
+    const { content, reply, refreshing } = this.props;
     console.log(content, reply);
 
     return (
       <View style={styles.container}>
         <NavigationBar onBack={() => this.props.history.goBack()} />
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl
+          refreshing={refreshing}
+          onRefresh={this.refreshTopic}
+        />}>
           <View style={styles.content}>
             <Text>{content}</Text>
           </View>
