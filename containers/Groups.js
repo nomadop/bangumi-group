@@ -9,6 +9,8 @@ import NavigationBar from '../components/NavigationBar';
 import { getGroups, getCurrentPage, getEndReached, getFetching, getRefreshing } from '../selectors/groups';
 import { groupActions } from '../actions';
 
+export const GROUP_TABS = ['all', 'AC', 'Game', 'Tech', 'Life'];
+
 class Groups extends React.Component {
   componentDidMount() {
     const { currentPage } = this.props;
@@ -26,10 +28,30 @@ class Groups extends React.Component {
     fetchGroups(currentPage + 1);
   };
 
-  renderItem = ({ item }) => (
+  renderTab = ({ item }) => {
+    const active = item === 'all';
+    return (
+      <TouchableOpacity key={item} style={[styles.tab, active && styles.tabActive]} >
+        <Text style={styles.tabText}>{item}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  renderTabBar = () => (
+    <View style={styles.tabBar}>
+      <FlatList
+        horizontal={true}
+        data={GROUP_TABS}
+        keyExtractor={_.identity}
+        renderItem={this.renderTab}
+      />
+    </View>
+  );
+
+  renderGroup = ({ item }) => (
     <Link to={item.link}>
       <View style={styles.item}>
-        <Image source={{uri: `http:${item.image}`}} style={styles.image} />
+        <Image source={{ uri: `http:${item.image}` }} style={styles.image} />
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.feed}>{item.feed}</Text>
       </View>
@@ -42,17 +64,18 @@ class Groups extends React.Component {
     const { groups, fetching, refreshing, refreshGroups } = this.props;
     return (
       <View style={styles.container}>
-        <NavigationBar />
+        <NavigationBar title={groups.length} />
         <FlatList
           data={groups}
           keyExtractor={this.keyExtractor}
-          renderItem={this.renderItem}
+          renderItem={this.renderGroup}
           onRefresh={refreshGroups}
           refreshing={refreshing}
         />
         <TouchableOpacity onPress={this.fetchNext} style={styles.more}>
           {(fetching || refreshing) ? <ActivityIndicator /> : <Text>More...</Text>}
         </TouchableOpacity>
+        {this.renderTabBar()}
       </View>
     );
   }
@@ -93,7 +116,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#ccc',
-  }
+  },
+  tabBar: {
+    height: 48,
+    borderColor: '#ccc',
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  tab: {
+    width: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tabActive: {
+    backgroundColor: '#00adef',
+  },
+  tabText: {
+    fontSize: 16,
+  },
 });
 
 const mapStateToProps = createStructuredSelector({
