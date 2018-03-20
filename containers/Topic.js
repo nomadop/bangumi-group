@@ -1,54 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import { parse } from 'himalaya';
+import { createStructuredSelector } from 'reselect';
 
 import NavigationBar from '../components/NavigationBar';
-import { search, text, hasClass, withTag, getAttribute } from '../utils/himalaya';
+import { getContent, getReply, getRefreshing } from '../selectors/topics';
+import { topicActions } from '../actions';
 
-export default class Topic extends React.Component {
-  constructor() {
-    super();
-    this.state = { reply: [] };
-  }
-
+class Topic extends React.Component {
   componentDidMount() {
-    const { match } = this.props;
-    fetch(`http://bangumi.tv/group/topic/${match.params.id}`)
-      .then(response => response.text())
-      .then(this.parseData);
+    const { match, fetchTopic } = this.props;
+    fetchTopic(match.params.id);
   }
-
-  parseData = (html) => {
-    // const $ = cheerio.load(html);
-    // this.setState({
-    //   content: $('.topic_content').text().trim(),
-    //   reply: $('.row_reply').map((index, row) => ({
-    //     id: $(row).attr('id'),
-    //     message: $(row).find('.message').text(),
-    //     image: $(row).find('img').attr('src'),
-    //     subReply: $(row).find('.sub_reply_bg').map((subIndex, subRow) => ({
-    //       id: $(subRow).attr('id'),
-    //       content: $(subRow).find('.cmt_sub_content').text(),
-    //     })).toArray(),
-    //   })).toArray(),
-    // });
-    const json = parse(html);
-    const newState = {
-      content: text(search(json, [hasClass('topic_content')])).trim(),
-      reply: search(json, [hasClass('row_reply')]).map(row => ({
-        id: getAttribute(row, 'id'),
-        message: text(search(row.children, [hasClass('message')])),
-        rowMessage: search(row.children, [hasClass('message')]),
-        image: search(row.children, [withTag('img')]).map(img => getAttribute(img, 'src')),
-        subReply: search(row.children, [hasClass('sub_reply_bg')]).map(subRow => ({
-          id: getAttribute(subRow, 'id'),
-          content: text(search(subRow.children, [hasClass('cmt_sub_content')])),
-        })),
-      })),
-    };
-    console.log(newState);
-    this.setState(newState);
-  };
 
   renderSubReply = (subReply) => {
     return (
@@ -68,7 +31,7 @@ export default class Topic extends React.Component {
   };
 
   render() {
-    const { content, reply } = this.state;
+    const { content, reply } = this.props;
     console.log(content, reply);
 
     return (
@@ -110,3 +73,17 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
   }
 });
+
+const mapStateToProps = createStructuredSelector({
+  reply: getReply,
+  content: getContent,
+  refreshing: getRefreshing,
+});
+
+
+const mapDispatchToProps = {
+  fetchTopic: topicActions.fetch.start,
+  refreshTopic: topicActions.refresh.start,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Topic);

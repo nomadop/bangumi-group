@@ -25,3 +25,19 @@ export const parseForum = (html) => {
   }));
   return { title, topics };
 };
+
+export const parseTopic = (html) => {
+  const json = parse(html);
+  return {
+    content: text(search(json, [hasClass('topic_content')])).trim(),
+    reply: search(json, [hasClass('row_reply')]).map(row => ({
+      id: getAttribute(row, 'id'),
+      message: text(search(row.children, [hasClass('message')])),
+      image: search(row.children, [withTag('img')]).map(img => getAttribute(img, 'src')),
+      subReply: search(row.children, [hasClass('sub_reply_bg')]).map(subRow => ({
+        id: getAttribute(subRow, 'id'),
+        content: text(search(subRow.children, [hasClass('cmt_sub_content')])),
+      })),
+    })),
+  };
+};
