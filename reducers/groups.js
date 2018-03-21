@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
 
-import { usePayload, usePayloadPath, handleFetchAction } from './common';
+import { usePayload, usePayloadPath, handleFetchAction, mapReducer } from './common';
 import { groupActions } from '../actions';
 
 const receiveGroups = combineActions(groupActions.fetch.done, groupActions.refresh.done);
@@ -34,10 +34,7 @@ const tag = handleActions({
 }, 'all');
 
 const taggedGroups = handleActions({
-  [receiveGroups]: (state, action) => ({
-    ...state,
-    [action.payload.tag]: groupsReducer(state[action.payload.tag], action),
-  }),
+  [receiveGroups]: mapReducer(groupsReducer, usePayloadPath('tag')),
 }, {});
 
 export default combineReducers({

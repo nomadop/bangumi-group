@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
 
-import { usePayloadPath, handleFetchAction } from './common';
+import { usePayloadPath, handleFetchAction, mapReducer } from './common';
 import { forumActions } from '../actions';
 
 const receiveForum = combineActions(forumActions.fetch.done, forumActions.refresh.done);
@@ -26,10 +26,7 @@ const title = handleActions({
 export const forumReducer = combineReducers({ topics, currentPage, endReached, title });
 
 const forums = handleActions({
-  [receiveForum]: (state, action) => ({
-    ...state,
-    [action.payload.group]: forumReducer(state[action.payload.group], action),
-  }),
+  [receiveForum]: mapReducer(forumReducer, usePayloadPath('group'))
 }, {});
 
 const fetching = handleFetchAction(forumActions.fetch);

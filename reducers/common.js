@@ -9,3 +9,11 @@ export const handleFetchAction = (fetchAction) => handleActions({
 export const usePayload = (state, { payload }) => payload;
 
 export const usePayloadPath = (path, defaultValue) => (state, { payload }) => _.get(payload, path, defaultValue);
+
+export const mapReducer = (reducer, keyExtractor) => (state, action) => {
+  const key = keyExtractor(state, action);
+  return {
+    ...state,
+    [key]: reducer(state[key], action),
+  };
+};
