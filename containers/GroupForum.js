@@ -33,11 +33,15 @@ class GroupForum extends React.Component {
 
   renderItem = ({ item }) => (
     <Link to={item.link}>
-      <View style={styles.item}>
-        <Text style={styles.subject}>{item.subject}</Text>
-        <Text style={styles.author}>{item.author}</Text>
-        <Text style={styles.posts}>{item.posts}</Text>
-        <Text style={styles.lastpost}>{item.lastpost}</Text>
+      <View style={styles.topic}>
+        <View style={styles.topicRow}>
+          <Text style={styles.subject}>{item.subject}</Text>
+        </View>
+        <View style={styles.topicRow}>
+          <Text style={styles.author}>{item.author}</Text>
+          <Text style={styles.posts}>{item.posts}</Text>
+          <Text style={styles.lastpost}>{item.lastpost}</Text>
+        </View>
       </View>
     </Link>
   );
@@ -69,27 +73,30 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'center',
   },
-  item: {
+  topic: {
     flex: 1,
-    flexDirection: 'row',
-    height: 50,
-    alignItems: 'center',
+    alignItems: 'stretch',
     borderColor: '#ccc',
     borderTopWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 8,
+    paddingTop: 8,
+  },
+  topicRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 8,
   },
   subject: {
     flex: 1,
   },
   author: {
-    paddingHorizontal: 8,
-    width: 100,
+    flex: 1,
   },
   posts: {
-    paddingRight: 8,
+    paddingHorizontal: 8,
     fontSize: 12,
     color: '#999',
-    width: 30,
+    width: 64,
   },
   lastpost: {
     fontSize: 12,

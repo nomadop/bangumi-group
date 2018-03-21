@@ -56,12 +56,14 @@ class Discover extends React.Component {
   );
 
   render() {
-    const { hotGroups, newGroups, topics } = this.props;
+    const { hotGroups, newGroups, topics, fetching, history } = this.props;
     const keyExtractor = _.property('link');
     return (
       <View style={styles.container}>
         <NavigationBar title="Discovery" onBack={() => history.goBack()} />
         <SectionList
+          onRefresh={this.fetchData}
+          refreshing={fetching}
           renderSectionHeader={this.renderSectionHeader}
           sections={[
             { data: topics, renderItem: this.renderTopic, title: '最新话题', keyExtractor },
