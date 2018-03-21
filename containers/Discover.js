@@ -7,11 +7,14 @@ import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import { discoverActions } from '../actions';
-import { getFetching, getHotGroups, getNewGroups, getTopics } from '../selectors/discover';
+import { getFetching, getHotGroups, getNewGroups, getTopics, getFetchStatus } from '../selectors/discover';
 
 class Discover extends React.Component {
   componentDidMount() {
-    this.fetchData();
+    const { fetchStatus } = this.props;
+    if (fetchStatus !== 'COMPLETE') {
+      this.fetchData();
+    }
   }
 
   fetchData = () => {
@@ -149,6 +152,7 @@ const mapStateToProps = createStructuredSelector({
   hotGroups: getHotGroups,
   newGroups: getNewGroups,
   fetching: getFetching,
+  fetchStatus: getFetchStatus,
 });
 
 const mapDispatchToProps = {

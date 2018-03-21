@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
 
-import { usePayload, usePayloadPath, handleFetchAction, mapReducer } from './common';
+import { usePayload, usePayloadPath, fetchingReducer, mapReducer } from './common';
 import { groupActions } from '../actions';
 
 const receiveGroups = combineActions(groupActions.fetch.done, groupActions.refresh.done);
@@ -25,9 +25,9 @@ export const groupsReducer = combineReducers({
   endReached,
 });
 
-const fetching = handleFetchAction(groupActions.fetch);
+const fetching = fetchingReducer(groupActions.fetch);
 
-const refreshing = handleFetchAction(groupActions.refresh);
+const refreshing = fetchingReducer(groupActions.refresh);
 
 const tag = handleActions({
   [groupActions.switchTag]: usePayload,

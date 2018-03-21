@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
 
-import { usePayloadPath, handleFetchAction, mapReducer } from './common';
+import { usePayloadPath, fetchingReducer, mapReducer } from './common';
 import { forumActions } from '../actions';
 
 const receiveForum = combineActions(forumActions.fetch.done, forumActions.refresh.done);
@@ -29,9 +29,9 @@ const forums = handleActions({
   [receiveForum]: mapReducer(forumReducer, usePayloadPath('group'))
 }, {});
 
-const fetching = handleFetchAction(forumActions.fetch);
+const fetching = fetchingReducer(forumActions.fetch);
 
-const refreshing = handleFetchAction(forumActions.refresh);
+const refreshing = fetchingReducer(forumActions.refresh);
 
 export default combineReducers({
   forums,

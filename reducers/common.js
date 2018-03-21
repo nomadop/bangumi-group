@@ -1,10 +1,16 @@
 import { handleActions, combineActions } from 'redux-actions';
 import * as _ from 'lodash';
 
-export const handleFetchAction = (fetchAction) => handleActions({
+export const fetchingReducer = (fetchAction) => handleActions({
   [fetchAction.start]: () => true,
   [combineActions(fetchAction.done, fetchAction.fail)]: () => false,
 }, false);
+
+export const fetchStatusReducer = (fetchAction) => handleActions({
+  [fetchAction.start]: () => 'PENDING',
+  [fetchAction.done]: () => 'COMPLETE',
+  [fetchAction.fail]: () => 'ERROR',
+}, 'NONE');
 
 export const usePayload = (state, { payload }) => payload;
 

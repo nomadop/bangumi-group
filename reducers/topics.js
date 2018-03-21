@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
 
-import { usePayloadPath, handleFetchAction, mapReducer } from './common';
+import { usePayloadPath, fetchingReducer, mapReducer } from './common';
 import { topicActions } from '../actions';
 
 const receiveTopic = combineActions(topicActions.fetch.done, topicActions.refresh.done);
@@ -20,9 +20,9 @@ const topics = handleActions({
   [receiveTopic]: mapReducer(topicReducer, usePayloadPath('id'))
 }, {});
 
-const fetching = handleFetchAction(topicActions.fetch);
+const fetching = fetchingReducer(topicActions.fetch);
 
-const refreshing = handleFetchAction(topicActions.refresh);
+const refreshing = fetchingReducer(topicActions.refresh);
 
 export default combineReducers({
   topics,

@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 
-import { usePayloadPath, handleFetchAction } from './common';
+import { usePayloadPath, fetchingReducer, fetchStatusReducer } from './common';
 import { discoverActions } from '../actions';
 
 const hotGroups = handleActions({
@@ -16,11 +16,14 @@ const topics = handleActions({
   [discoverActions.fetch.done]: usePayloadPath('topics'),
 }, []);
 
-const fetching = handleFetchAction(discoverActions.fetch);
+const fetching = fetchingReducer(discoverActions.fetch);
+
+const fetchStatus = fetchStatusReducer(discoverActions.fetch);
 
 export default combineReducers({
   hotGroups,
   newGroups,
   topics,
   fetching,
+  fetchStatus,
 });
