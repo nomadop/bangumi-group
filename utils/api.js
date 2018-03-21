@@ -1,6 +1,6 @@
 import { parseGroups, parseForum, parseTopic } from './parser';
 
-export const fetchGroups = page => fetch(`http://bangumi.tv/group/category/all?page=${page}`)
+export const fetchGroups = (tag, page) => fetch(`http://bangumi.tv/group/category/${tag}?page=${page}`)
   .then(response => response.text())
   .then(parseGroups);
 

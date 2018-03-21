@@ -6,4 +6,6 @@ export const handleFetchAction = (fetchAction) => handleActions({
   [combineActions(fetchAction.done, fetchAction.fail)]: () => false,
 }, false);
 
+export const usePayload = (state, { payload }) => payload;
+
 export const usePayloadPath = (path, defaultValue) => (state, { payload }) => _.get(payload, path, defaultValue);

@@ -6,10 +6,10 @@ import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { getGroups, getCurrentPage, getEndReached, getFetching, getRefreshing } from '../selectors/groups';
+import { getTag, getGroups, getCurrentPage, getEndReached, getFetching, getRefreshing } from '../selectors/groups';
 import { groupActions } from '../actions';
 
-export const GROUP_TABS = ['all', 'AC', 'Game', 'Tech', 'Life'];
+export const GROUP_TAGS = ['all', 'AC', 'Game', 'Tech', 'Life'];
 
 class Groups extends React.Component {
   componentDidMount() {
@@ -20,33 +20,47 @@ class Groups extends React.Component {
   }
 
   fetchNext = () => {
-    const { currentPage, endReached, fetching, fetchGroups } = this.props;
+    const { currentPage, endReached, fetching, fetchGroups, tag } = this.props;
     if (fetching || endReached) {
       return;
     }
 
-    fetchGroups(currentPage + 1);
+    fetchGroups({ tag, page: currentPage + 1 });
+  };
+
+  refreshGroups = () => {
+    const { tag, refreshGroups } = this.props;
+    refreshGroups({ tag });
   };
 
   renderTab = ({ item }) => {
-    const active = item === 'all';
+    const { tag, switchTag } = this.props;
+    const active = item === tag;
     return (
-      <TouchableOpacity key={item} style={[styles.tab, active && styles.tabActive]} >
+      <TouchableOpacity
+        key={item}
+        style={[styles.tab, active && styles.tabActive]}
+        onPress={() => switchTag(item)}
+      >
         <Text style={styles.tabText}>{item}</Text>
       </TouchableOpacity>
     );
   };
 
-  renderTabBar = () => (
-    <View style={styles.tabBar}>
-      <FlatList
-        horizontal={true}
-        data={GROUP_TABS}
-        keyExtractor={_.identity}
-        renderItem={this.renderTab}
-      />
-    </View>
-  );
+  renderTabBar = () => {
+    const { tag } = this.props;
+    return (
+      <View style={styles.tabBar}>
+        <FlatList
+          horizontal={true}
+          data={GROUP_TAGS}
+          keyExtractor={_.identity}
+          renderItem={this.renderTab}
+          extraData={tag}
+        />
+      </View>
+    );
+  };
 
   renderGroup = ({ item }) => (
     <Link to={item.link}>
@@ -61,7 +75,7 @@ class Groups extends React.Component {
   keyExtractor = (item) => _.last(item.link.split('/'));
 
   render() {
-    const { groups, fetching, refreshing, refreshGroups } = this.props;
+    const { groups, fetching, refreshing } = this.props;
     return (
       <View style={styles.container}>
         <NavigationBar title={groups.length} />
@@ -69,7 +83,7 @@ class Groups extends React.Component {
           data={groups}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderGroup}
-          onRefresh={refreshGroups}
+          onRefresh={this.refreshGroups}
           refreshing={refreshing}
         />
         <TouchableOpacity onPress={this.fetchNext} style={styles.more}>
@@ -136,6 +150,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = createStructuredSelector({
+  tag: getTag,
   groups: getGroups,
   currentPage: getCurrentPage,
   endReached: getEndReached,
@@ -145,6 +160,7 @@ const mapStateToProps = createStructuredSelector({
 
 
 const mapDispatchToProps = {
+  switchTag: groupActions.switchTag,
   fetchGroups: groupActions.fetch.start,
   refreshGroups: groupActions.refresh.start,
 };
