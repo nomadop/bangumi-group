@@ -74,11 +74,17 @@ class Groups extends React.Component {
 
   keyExtractor = (item) => _.last(item.link.split('/'));
 
+  renderRightTitle = () => (
+    <Link to="/discover">
+      <Text>Discover</Text>
+    </Link>
+  );
+
   render() {
     const { groups, fetching, refreshing } = this.props;
     return (
       <View style={styles.container}>
-        <NavigationBar title={groups.length} />
+        <NavigationBar title={groups.length} renderRightTitle={this.renderRightTitle} />
         <FlatList
           data={groups}
           keyExtractor={this.keyExtractor}

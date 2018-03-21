@@ -2,13 +2,17 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 const NavigationBar = (props) => {
+  const { onBack, title, renderRightTitle } = props;
+  const rightTitle = renderRightTitle ? renderRightTitle() : <View />;
   return (
     <View style={styles.navigation}>
-      <TouchableOpacity onPress={props.onBack} style={styles.left}>
+      <TouchableOpacity onPress={onBack} style={styles.left}>
         <Text>Back</Text>
       </TouchableOpacity>
-      <Text style={styles.title}>{props.title}</Text>
-      <View style={styles.right} />
+      <Text style={styles.title}>{title}</Text>
+      <View style={styles.right}>
+        { rightTitle }
+      </View>
     </View>
   )
 };
@@ -25,14 +29,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   left: {
-    width: 48,
+    width: 64,
   },
   title: {
     flex: 1,
     textAlign: 'center',
   },
   right: {
-    width: 48,
+    width: 64,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });
 

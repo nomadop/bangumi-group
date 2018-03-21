@@ -10,6 +10,7 @@ import 'rxjs';
 import Groups from './containers/Groups';
 import GroupForum from './containers/GroupForum';
 import Topic from './containers/Topic';
+import Discover from './containers/Discover';
 import reducers from './reducers';
 import epics from './epics';
 
@@ -27,6 +28,7 @@ export default class App extends React.Component {
         <NativeRouter>
           <View style={styles.container}>
             <Route exact path="/" component={Groups} />
+            <Route exact path="/discover" component={Discover} />
             <Route exact path="/group/:name" component={GroupForum} />
             <Route path="/group/topic/:id" component={Topic} />
           </View>
