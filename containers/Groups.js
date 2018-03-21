@@ -75,7 +75,7 @@ class Groups extends React.Component {
   keyExtractor = (item) => _.last(item.link.split('/'));
 
   renderRightTitle = () => (
-    <Link to="/discover">
+    <Link to="/discover" style={styles.discover}>
       <Text>Discover</Text>
     </Link>
   );
@@ -152,6 +152,9 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 16,
+  },
+  discover: {
+    justifyContent: 'center',
   },
 });
 
