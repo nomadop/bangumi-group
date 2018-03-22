@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, ScrollView, RefreshControl } from 'react-native
 import { createStructuredSelector } from 'reselect';
 
 import NavigationBar from '../components/NavigationBar';
-import { getContent, getReply, getRefreshing } from '../selectors/topics';
+import { getPost, getReply, getRefreshing, getTitle } from '../selectors/topics';
 import { topicActions } from '../actions';
 
 class Topic extends React.Component {
@@ -29,25 +29,24 @@ class Topic extends React.Component {
   renderReply = (reply) => {
     return (
       <View key={reply.id} style={styles.reply}>
-        <Text>{reply.message}</Text>
+        <Text>{reply.content}</Text>
         { reply.subReply.map(this.renderSubReply) }
       </View>
     );
   };
 
   render() {
-    const { content, reply, refreshing } = this.props;
-    console.log(content, reply);
+    const { title, post, reply, refreshing } = this.props;
 
     return (
       <View style={styles.container}>
-        <NavigationBar onBack={() => this.props.history.goBack()} />
+        <NavigationBar title={title} onBack={() => this.props.history.goBack()} />
         <ScrollView refreshControl={<RefreshControl
           refreshing={refreshing}
           onRefresh={this.refreshTopic}
         />}>
           <View style={styles.content}>
-            <Text>{content}</Text>
+            <Text>{post.content}</Text>
           </View>
           { reply.map(this.renderReply) }
         </ScrollView>
@@ -83,8 +82,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = createStructuredSelector({
+  post: getPost,
   reply: getReply,
-  content: getContent,
+  title: getTitle,
   refreshing: getRefreshing,
 });
 

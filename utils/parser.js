@@ -28,15 +28,31 @@ export const parseForum = html => {
 
 export const parseTopic = html => {
   const json = parse(html);
+  const post = search(json, [hasClass('postTopic')])[0];
   return {
-    content: text(search(json, [hasClass('topic_content')])).trim(),
+    title: text(search(json, [withTag('head'), withTag('title')])),
+    post: {
+      avatar: getAttribute(search(post.children, [hasClass('avatarNeue')])[0], 'style'),
+      author: text(search(post.children, [hasClass('inner'), withTag('strong')])),
+      tip: text(search(post.children, [hasClass('inner'), hasClass('tip_j')])),
+      content: text(search(post.children, [hasClass('topic_content')])).trim(),
+      reInfo: text(search(post.children, [hasClass('re_info')])),
+      image: search(post.children, [hasClass('topic_content'), withTag('img')]).map(img => getAttribute(img, 'src')),
+    },
     reply: search(json, [hasClass('row_reply')]).map(row => ({
       id: getAttribute(row, 'id'),
-      message: text(search(row.children, [hasClass('message')])),
+      avatar: getAttribute(search(row.children, [hasClass('avatarNeue')])[0], 'style'),
+      author: text(search(row.children, [hasClass('inner'), hasClass('userInfo'), withTag('strong')])),
+      tip: text(search(row.children, [hasClass('inner'), hasClass('userInfo'), hasClass('tip_j')])),
+      content: text(search(row.children, [hasClass('message')])),
+      reInfo: text(search(row.children, [hasClass('re_info')])[0].children).trim(),
       image: search(row.children, [withTag('img')]).map(img => getAttribute(img, 'src')),
       subReply: search(row.children, [hasClass('sub_reply_bg')]).map(subRow => ({
         id: getAttribute(subRow, 'id'),
+        avatar: getAttribute(search(subRow.children, [hasClass('avatarNeue')])[0], 'style'),
+        author: text(search(subRow.children, [hasClass('inner'), withTag('strong')])),
         content: text(search(subRow.children, [hasClass('cmt_sub_content')])),
+        reInfo: text(search(subRow.children, [hasClass('re_info')])).trim(),
       })),
     })),
   };
