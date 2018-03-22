@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, ScrollView, RefreshControl } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, RefreshControl, Image } from 'react-native';
 import { createStructuredSelector } from 'reselect';
 
 import NavigationBar from '../components/NavigationBar';
@@ -21,7 +21,12 @@ class Topic extends React.Component {
   renderSubReply = (subReply) => {
     return (
       <View key={subReply.id} style={styles.subReply}>
-        <Text>{subReply.content}</Text>
+        <Image source={{ uri: `http:${subReply.avatar}` }} style={styles.avatarTiny} />
+        <View style={styles.replyContent}>
+          <Text style={styles.reInfo}>{subReply.reInfo}</Text>
+          <Text>{subReply.author}</Text>
+          <Text style={styles.content}>{subReply.content}</Text>
+        </View>
       </View>
     );
   };
@@ -29,8 +34,16 @@ class Topic extends React.Component {
   renderReply = (reply) => {
     return (
       <View key={reply.id} style={styles.reply}>
-        <Text>{reply.content}</Text>
-        { reply.subReply.map(this.renderSubReply) }
+        <Image source={{ uri: `http:${reply.avatar}` }} style={styles.avatarSmall} />
+        <View style={styles.replyContent}>
+          <Text style={styles.reInfo}>{reply.reInfo}</Text>
+          <Text>
+            {reply.author}
+            <Text style={styles.tip}>{reply.tip}</Text>
+          </Text>
+          <Text style={styles.content}>{reply.content}</Text>
+          { reply.subReply.map(this.renderSubReply) }
+        </View>
       </View>
     );
   };
@@ -45,8 +58,18 @@ class Topic extends React.Component {
           refreshing={refreshing}
           onRefresh={this.refreshTopic}
         />}>
-          <View style={styles.content}>
-            <Text>{post.content}</Text>
+          <View style={styles.post}>
+            <View style={styles.authorRow}>
+              <Image source={{ uri: `http:${post.avatar}` }} style={styles.avatar} />
+              <View>
+                <Text style={styles.reInfo}>{post.reInfo}</Text>
+                <Text>
+                  {post.author}
+                  <Text style={styles.tip}>{post.tip}</Text>
+                </Text>
+              </View>
+            </View>
+            <Text style={styles.content}>{post.content}</Text>
           </View>
           { reply.map(this.renderReply) }
         </ScrollView>
@@ -59,26 +82,61 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'center',
   },
-  content: {
+  post: {
     padding: 8,
     borderBottomColor: '#ccc',
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  authorRow: {
+    flexDirection: 'row',
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    marginRight: 8,
+  },
+  tip: {
+    color: '#999',
+    marginLeft: 4,
+  },
+  content: {
+    paddingTop: 8,
+  },
+  reInfo: {
+    color: '#AAA',
+    fontSize: 12,
+    marginBottom: 4,
   },
   reply: {
     padding: 8,
+    flexDirection: 'row',
     borderBottomColor: '#ccc',
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  replyContent: {
+    flex: 1,
+    alignItems: 'stretch',
+  },
+  avatarSmall: {
+    width: 40,
+    height: 40,
+    marginRight: 8,
   },
   subReply: {
     marginTop: 4,
     paddingTop: 4,
-    marginLeft: 16,
+    flexDirection: 'row',
     borderTopColor: '#ccc',
     borderTopWidth: StyleSheet.hairlineWidth,
-  }
+  },
+  avatarTiny: {
+    width: 32,
+    height: 32,
+    marginRight: 4,
+  },
 });
 
 const mapStateToProps = createStructuredSelector({

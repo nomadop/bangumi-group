@@ -29,10 +29,15 @@ export const parseForum = html => {
 export const parseTopic = html => {
   const json = parse(html);
   const post = search(json, [hasClass('postTopic')])[0];
+  const getAvatar = ele => {
+    const style = getAttribute(search(ele.children, [hasClass('avatarNeue')])[0], 'style');
+    const match = style.match(/background-image:url\('([^']*)'\)/);
+    return match && match[1];
+  };
   return {
     title: text(search(json, [withTag('head'), withTag('title')])),
     post: {
-      avatar: getAttribute(search(post.children, [hasClass('avatarNeue')])[0], 'style'),
+      avatar: getAvatar(post),
       author: text(search(post.children, [hasClass('inner'), withTag('strong')])),
       tip: text(search(post.children, [hasClass('inner'), hasClass('tip_j')])),
       content: text(search(post.children, [hasClass('topic_content')])).trim(),
@@ -41,7 +46,7 @@ export const parseTopic = html => {
     },
     reply: search(json, [hasClass('row_reply')]).map(row => ({
       id: getAttribute(row, 'id'),
-      avatar: getAttribute(search(row.children, [hasClass('avatarNeue')])[0], 'style'),
+      avatar: getAvatar(row),
       author: text(search(row.children, [hasClass('inner'), hasClass('userInfo'), withTag('strong')])),
       tip: text(search(row.children, [hasClass('inner'), hasClass('userInfo'), hasClass('tip_j')])),
       content: text(search(row.children, [hasClass('message')])),
@@ -49,7 +54,7 @@ export const parseTopic = html => {
       image: search(row.children, [withTag('img')]).map(img => getAttribute(img, 'src')),
       subReply: search(row.children, [hasClass('sub_reply_bg')]).map(subRow => ({
         id: getAttribute(subRow, 'id'),
-        avatar: getAttribute(search(subRow.children, [hasClass('avatarNeue')])[0], 'style'),
+        avatar: getAvatar(subRow),
         author: text(search(subRow.children, [hasClass('inner'), withTag('strong')])),
         content: text(search(subRow.children, [hasClass('cmt_sub_content')])),
         reInfo: text(search(subRow.children, [hasClass('re_info')])).trim(),
