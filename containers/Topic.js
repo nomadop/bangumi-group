@@ -18,14 +18,25 @@ class Topic extends React.Component {
     refreshTopic(match.params.id);
   };
 
+  renderReplyContent = (reply) => (
+    <View style={styles.replyContent}>
+      <Text style={styles.reInfo}>{reply.reInfo}</Text>
+      <Text>
+        {reply.author}
+        <Text style={styles.tip}>{reply.tip}</Text>
+      </Text>
+      <Text style={styles.content}>{reply.content}</Text>
+      { (reply.subReply || []).map(this.renderSubReply) }
+    </View>
+  );
+
   renderSubReply = (subReply) => {
     return (
       <View key={subReply.id} style={styles.subReply}>
-        <Image source={{ uri: `http:${subReply.avatar}` }} style={styles.avatarTiny} />
-        <View style={styles.replyContent}>
-          <Text style={styles.reInfo}>{subReply.reInfo}</Text>
-          <Text>{subReply.author}</Text>
-          <Text style={styles.content}>{subReply.content}</Text>
+        <View style={styles.dashed} />
+        <View style={styles.row}>
+          <Image source={{ uri: `http:${subReply.avatar}` }} style={styles.avatarTiny} />
+          { this.renderReplyContent(subReply) }
         </View>
       </View>
     );
@@ -35,15 +46,7 @@ class Topic extends React.Component {
     return (
       <View key={reply.id} style={styles.reply}>
         <Image source={{ uri: `http:${reply.avatar}` }} style={styles.avatarSmall} />
-        <View style={styles.replyContent}>
-          <Text style={styles.reInfo}>{reply.reInfo}</Text>
-          <Text>
-            {reply.author}
-            <Text style={styles.tip}>{reply.tip}</Text>
-          </Text>
-          <Text style={styles.content}>{reply.content}</Text>
-          { reply.subReply.map(this.renderSubReply) }
-        </View>
+        { this.renderReplyContent(reply) }
       </View>
     );
   };
@@ -59,7 +62,7 @@ class Topic extends React.Component {
           onRefresh={this.refreshTopic}
         />}>
           <View style={styles.post}>
-            <View style={styles.authorRow}>
+            <View style={styles.row}>
               <Image source={{ uri: `http:${post.avatar}` }} style={styles.avatar} />
               <View>
                 <Text style={styles.reInfo}>{post.reInfo}</Text>
@@ -90,7 +93,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  authorRow: {
+  row: {
     flexDirection: 'row',
   },
   avatar: {
@@ -127,10 +130,14 @@ const styles = StyleSheet.create({
   },
   subReply: {
     marginTop: 4,
-    paddingTop: 4,
-    flexDirection: 'row',
-    borderTopColor: '#ccc',
-    borderTopWidth: StyleSheet.hairlineWidth,
+    alignItems: 'stretch',
+  },
+  dashed: {
+    height: 0,
+    marginBottom: 4,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    borderWidth: StyleSheet.hairlineWidth,
   },
   avatarTiny: {
     width: 32,
