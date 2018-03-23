@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, ScrollView, RefreshControl, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, RefreshControl, Image, ActivityIndicator } from 'react-native';
 import { createStructuredSelector } from 'reselect';
+import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { getPost, getReply, getRefreshing, getTitle } from '../selectors/topics';
+import { getPost, getReply, getRefreshing, getTitle, getFetching } from '../selectors/topics';
 import { topicActions } from '../actions';
 
 class Topic extends React.Component {
@@ -51,31 +52,44 @@ class Topic extends React.Component {
     );
   };
 
+  renderPost = () => {
+    const { post, reply, refreshing } = this.props;
+    return (
+      <ScrollView refreshControl={<RefreshControl
+        refreshing={refreshing}
+        onRefresh={this.refreshTopic}
+      />}>
+        <View style={styles.post}>
+          <View style={styles.row}>
+            <Image source={{ uri: `http:${post.avatar}` }} style={styles.avatar} />
+            <View>
+              <Text style={styles.reInfo}>{post.reInfo}</Text>
+              <Text>
+                {post.author}
+                <Text style={styles.tip}>{post.tip}</Text>
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.content}>{post.content}</Text>
+        </View>
+        { reply.map(this.renderReply) }
+      </ScrollView>
+    );
+  };
+
+  renderActivityIndicator = () => (
+    <View style={styles.activityIndicator}>
+      <ActivityIndicator />
+    </View>
+  );
+
   render() {
-    const { title, post, reply, refreshing } = this.props;
+    const { title, post, fetching } = this.props;
 
     return (
       <View style={styles.container}>
         <NavigationBar title={title} onBack={() => this.props.history.goBack()} />
-        <ScrollView refreshControl={<RefreshControl
-          refreshing={refreshing}
-          onRefresh={this.refreshTopic}
-        />}>
-          <View style={styles.post}>
-            <View style={styles.row}>
-              <Image source={{ uri: `http:${post.avatar}` }} style={styles.avatar} />
-              <View>
-                <Text style={styles.reInfo}>{post.reInfo}</Text>
-                <Text>
-                  {post.author}
-                  <Text style={styles.tip}>{post.tip}</Text>
-                </Text>
-              </View>
-            </View>
-            <Text style={styles.content}>{post.content}</Text>
-          </View>
-          { reply.map(this.renderReply) }
-        </ScrollView>
+        { _.isEmpty(post) && fetching ? this.renderActivityIndicator() : this.renderPost() }
       </View>
     );
   }
@@ -86,6 +100,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'stretch',
+    justifyContent: 'center',
+  },
+  activityIndicator: {
+    flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
   },
   post: {
@@ -111,6 +130,7 @@ const styles = StyleSheet.create({
   reInfo: {
     color: '#AAA',
     fontSize: 12,
+    marginTop: -2,
     marginBottom: 4,
   },
   reply: {
@@ -150,6 +170,7 @@ const mapStateToProps = createStructuredSelector({
   post: getPost,
   reply: getReply,
   title: getTitle,
+  fetching: getFetching,
   refreshing: getRefreshing,
 });
 

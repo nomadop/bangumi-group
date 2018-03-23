@@ -9,4 +9,6 @@ export const getPost = createSelector([getTopicState], state => state.post);
 
 export const getReply = createSelector([getTopicState], state => state.reply);
 
+export const getFetching = state => state.topics.fetching;
+
 export const getRefreshing = state => state.topics.refreshing;

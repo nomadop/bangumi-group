@@ -11,7 +11,7 @@ const NavigationBar = (props) => {
         { leftTitle }
       </TouchableOpacity>
       <View style={styles.title}>
-        <Text>{title}</Text>
+        <Text style={styles.titleText}>{title}</Text>
       </View>
       <View style={styles.right}>
         { rightTitle }
@@ -39,6 +39,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  titleText: {
+    textAlign: 'center',
   },
   right: {
     width: 64,
