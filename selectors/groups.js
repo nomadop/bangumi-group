@@ -22,5 +22,3 @@ export const getCurrentPage = createSelector([getGroupsState], state => state.cu
 export const getEndReached = createSelector([getGroupsState], state => state.endReached);
 
 export const getFetching = state => state.groups.fetching;
-
-export const getRefreshing = state => state.groups.refreshing;

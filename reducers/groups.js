@@ -1,22 +1,19 @@
 import { combineReducers } from 'redux';
-import { handleActions, combineActions } from 'redux-actions';
+import { handleActions } from 'redux-actions';
 
 import { usePayload, usePayloadPath, fetchingReducer, mapReducer } from './common';
 import { groupActions } from '../actions';
 
-const receiveGroups = combineActions(groupActions.fetch.done, groupActions.refresh.done);
-
 const groups = handleActions({
   [groupActions.fetch.done]: (state, { payload }) => state.concat(payload.groups),
-  [groupActions.refresh.done]: usePayloadPath('groups'),
 }, []);
 
 const currentPage = handleActions({
-  [receiveGroups]: usePayloadPath('currentPage'),
+  [groupActions.fetch.done]: usePayloadPath('currentPage'),
 }, 0);
 
 const endReached = handleActions({
-  [receiveGroups]: usePayloadPath('endReached'),
+  [groupActions.fetch.done]: usePayloadPath('endReached'),
 }, false);
 
 export const groupsReducer = combineReducers({
@@ -27,19 +24,16 @@ export const groupsReducer = combineReducers({
 
 const fetching = fetchingReducer(groupActions.fetch);
 
-const refreshing = fetchingReducer(groupActions.refresh);
-
 const tag = handleActions({
   [groupActions.switchTag]: usePayload,
 }, 'all');
 
 const taggedGroups = handleActions({
-  [receiveGroups]: mapReducer(groupsReducer, usePayloadPath('tag')),
+  [groupActions.fetch.done]: mapReducer(groupsReducer, usePayloadPath('tag')),
 }, {});
 
 export default combineReducers({
   tag,
   taggedGroups,
   fetching,
-  refreshing,
 });

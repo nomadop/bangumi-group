@@ -47,13 +47,11 @@ class GroupForum extends React.Component {
     </Link>
   );
 
-  keyExtractor = (item) => _.last(item.link.split('/'));
-
   renderTopics = () => {
     const { topics, refreshing } = this.props;
     return <FlatList
       data={topics}
-      keyExtractor={this.keyExtractor}
+      keyExtractor={_.property('link')}
       renderItem={this.renderItem}
       onEndReached={this.fetchNext}
       onRefresh={this.refreshForum}

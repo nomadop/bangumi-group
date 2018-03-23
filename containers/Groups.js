@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { getTag, getGroups, getCurrentPage, getEndReached, getFetching, getRefreshing } from '../selectors/groups';
+import { getTag, getGroups, getCurrentPage, getEndReached, getFetching } from '../selectors/groups';
 import { groupActions } from '../actions';
 
 export const GROUP_TAGS = ['all', 'AC', 'Game', 'Tech', 'Life'];
@@ -26,11 +26,6 @@ class Groups extends React.Component {
     }
 
     fetchGroups({ tag, page: currentPage + 1 });
-  };
-
-  refreshGroups = () => {
-    const { tag, refreshGroups } = this.props;
-    refreshGroups({ tag });
   };
 
   renderTab = ({ item }) => {
@@ -81,7 +76,7 @@ class Groups extends React.Component {
   );
 
   render() {
-    const { groups, fetching, refreshing } = this.props;
+    const { groups, fetching } = this.props;
     return (
       <View style={styles.container}>
         <NavigationBar title={groups.length} renderRightTitle={this.renderRightTitle} />
@@ -89,12 +84,9 @@ class Groups extends React.Component {
           data={groups}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderGroup}
-          onRefresh={this.refreshGroups}
-          refreshing={refreshing}
+          onRefresh={this.fetchNext}
+          refreshing={fetching}
         />
-        <TouchableOpacity onPress={this.fetchNext} style={styles.more}>
-          {(fetching || refreshing) ? <ActivityIndicator /> : <Text>More...</Text>}
-        </TouchableOpacity>
         {this.renderTabBar()}
       </View>
     );
@@ -164,14 +156,12 @@ const mapStateToProps = createStructuredSelector({
   currentPage: getCurrentPage,
   endReached: getEndReached,
   fetching: getFetching,
-  refreshing: getRefreshing,
 });
 
 
 const mapDispatchToProps = {
   switchTag: groupActions.switchTag,
   fetchGroups: groupActions.fetch.start,
-  refreshGroups: groupActions.refresh.start,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Groups);
