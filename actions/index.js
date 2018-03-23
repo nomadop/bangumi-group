@@ -6,15 +6,15 @@ import topicActionMap from './topics';
 import discoverActionMap from './discover';
 
 const actions = createActions({
-  GROUP_ACTIONS: groupActionMap,
-  FORUM_ACTIONS: forumActionMap,
-  TOPIC_ACTIONS: topicActionMap,
-  DISCOVER_ACTIONS: discoverActionMap,
+  GROUPS: groupActionMap,
+  FORUMS: forumActionMap,
+  TOPICS: topicActionMap,
+  DISCOVER: discoverActionMap,
 });
 
 export const {
-  groupActions,
-  forumActions,
-  topicActions,
-  discoverActions,
+  groups,
+  forums,
+  topics,
+  discover,
 } = actions;

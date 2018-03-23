@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 
-import { topicActions } from '../actions';
+import { topics as topicActions } from '../actions';
 import { fetchTopic } from '../utils/api';
 
 const fetchEpic = action$ => action$

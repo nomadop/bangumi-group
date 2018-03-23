@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 
-import { discoverActions } from '../actions';
+import { discover as discoverActions } from '../actions';
 import { fetchDiscover } from '../utils/api';
 
 const fetchEpic = action$ => action$

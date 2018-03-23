@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
 
 import { usePayloadPath, fetchingReducer, mapReducer } from './common';
-import { topicActions } from '../actions';
+import { topics as topicActions } from '../actions';
 
 const receiveTopic = combineActions(topicActions.fetch.done, topicActions.refresh.done);
 

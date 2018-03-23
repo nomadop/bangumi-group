@@ -5,7 +5,7 @@ import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { discoverActions } from '../actions';
+import { discover as discoverActions } from '../actions';
 import { discover as mapStateToProps } from '../selectors';
 
 class Discover extends React.Component {

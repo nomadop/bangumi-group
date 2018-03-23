@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 
 import { usePayload, usePayloadPath, fetchingReducer, mapReducer } from './common';
-import { groupActions } from '../actions';
+import { groups as groupActions } from '../actions';
 
 const groups = handleActions({
   [groupActions.fetch.done]: (state, { payload }) => state.concat(payload.groups),

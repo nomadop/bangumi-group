@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { handleActions, combineActions } from 'redux-actions';
 
 import { usePayloadPath, fetchingReducer, mapReducer } from './common';
-import { forumActions } from '../actions';
+import { forums as forumActions } from '../actions';
 
 const receiveForum = combineActions(forumActions.fetch.done, forumActions.refresh.done);
 

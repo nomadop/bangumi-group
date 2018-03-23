@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import { groups as mapStateToProps } from '../selectors';
-import { groupActions } from '../actions';
+import { groups as groupActions } from '../actions';
 
 export const GROUP_TAGS = ['all', 'AC', 'Game', 'Tech', 'Life'];
 

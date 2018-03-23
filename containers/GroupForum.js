@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import NavigationBar from '../components/NavigationBar';
 import FetchingIndicator from '../components/FetchingIndicator';
 import { forums as mapStateToProps } from '../selectors';
-import { forumActions } from '../actions';
+import { forums as forumActions } from '../actions';
 
 class GroupForum extends React.Component {
   componentDidMount() {

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 
-import { groupActions } from '../actions';
+import { groups as groupActions } from '../actions';
 import { fetchGroups } from '../utils/api';
 import { getCurrentPage } from '../selectors/groups';
 

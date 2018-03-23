@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 
 import { usePayloadPath, fetchingReducer, fetchStatusReducer } from './common';
-import { discoverActions } from '../actions';
+import { discover as discoverActions } from '../actions';
 
 const hotGroups = handleActions({
   [discoverActions.fetch.done]: usePayloadPath('hotGroups'),

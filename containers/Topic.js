@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import NavigationBar from '../components/NavigationBar';
 import FetchingIndicator from '../components/FetchingIndicator';
 import { topics as mapStateToProps } from '../selectors';
-import { topicActions } from '../actions';
+import { topics as topicActions } from '../actions';
 
 class Topic extends React.Component {
   componentDidMount() {
