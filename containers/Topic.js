@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, ScrollView, RefreshControl, Image } from 'react-native';
-import { createStructuredSelector } from 'reselect';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import FetchingIndicator from '../components/FetchingIndicator';
-import { getPost, getReply, getRefreshing, getTitle, getFetching } from '../selectors/topics';
+import { topics as mapStateToProps } from '../selectors';
 import { topicActions } from '../actions';
 
 class Topic extends React.Component {
@@ -160,15 +159,6 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
 });
-
-const mapStateToProps = createStructuredSelector({
-  post: getPost,
-  reply: getReply,
-  title: getTitle,
-  fetching: getFetching,
-  refreshing: getRefreshing,
-});
-
 
 const mapDispatchToProps = {
   fetchTopic: topicActions.fetch.start,

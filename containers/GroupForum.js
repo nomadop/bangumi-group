@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, View, Text, FlatList } from 'react-native';
-import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import FetchingIndicator from '../components/FetchingIndicator';
-import { getTopics, getCurrentPage, getEndReached, getTitle, getRefreshing, getFetching } from '../selectors/forums';
+import { forums as mapStateToProps } from '../selectors';
 import { forumActions } from '../actions';
 
 class GroupForum extends React.Component {
@@ -107,16 +106,6 @@ const styles = StyleSheet.create({
     width: 64,
   },
 });
-
-const mapStateToProps = createStructuredSelector({
-  topics: getTopics,
-  currentPage: getCurrentPage,
-  endReached: getEndReached,
-  title: getTitle,
-  fetching: getFetching,
-  refreshing: getRefreshing,
-});
-
 
 const mapDispatchToProps = {
   fetchForum: forumActions.fetch.start,

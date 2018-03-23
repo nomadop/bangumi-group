@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, View, Text, SectionList, Image } from 'react-native';
-import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import { discoverActions } from '../actions';
-import { getFetching, getHotGroups, getNewGroups, getTopics, getFetchStatus } from '../selectors/discover';
+import { discover as mapStateToProps } from '../selectors';
 
 class Discover extends React.Component {
   componentDidMount() {
@@ -145,14 +144,6 @@ const styles = StyleSheet.create({
     height: 48,
     marginRight: 8,
   },
-});
-
-const mapStateToProps = createStructuredSelector({
-  topics: getTopics,
-  hotGroups: getHotGroups,
-  newGroups: getNewGroups,
-  fetching: getFetching,
-  fetchStatus: getFetchStatus,
 });
 
 const mapDispatchToProps = {

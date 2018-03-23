@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { createSelector } from 'reselect';
+import { createSelector, createStructuredSelector } from 'reselect';
 
 import { groupsReducer } from '../reducers/groups';
 
@@ -22,3 +22,11 @@ export const getCurrentPage = createSelector([getGroupsState], state => state.cu
 export const getEndReached = createSelector([getGroupsState], state => state.endReached);
 
 export const getFetching = state => state.groups.fetching;
+
+export default createStructuredSelector({
+  tag: getTag,
+  groups: getGroups,
+  currentPage: getCurrentPage,
+  endReached: getEndReached,
+  fetching: getFetching,
+});

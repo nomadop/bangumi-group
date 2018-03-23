@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
-import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { getTag, getGroups, getCurrentPage, getEndReached, getFetching } from '../selectors/groups';
+import { groups as mapStateToProps } from '../selectors';
 import { groupActions } from '../actions';
 
 export const GROUP_TAGS = ['all', 'AC', 'Game', 'Tech', 'Life'];
@@ -67,8 +66,6 @@ class Groups extends React.Component {
     </Link>
   );
 
-  keyExtractor = (item) => _.last(item.link.split('/'));
-
   renderRightTitle = () => (
     <Link to="/discover" style={styles.discover}>
       <Text>Discover</Text>
@@ -82,7 +79,7 @@ class Groups extends React.Component {
         <NavigationBar title={groups.length} renderRightTitle={this.renderRightTitle} />
         <FlatList
           data={groups}
-          keyExtractor={this.keyExtractor}
+          keyExtractor={_.property('link')}
           renderItem={this.renderGroup}
           onRefresh={this.fetchNext}
           refreshing={fetching}
@@ -149,15 +146,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-const mapStateToProps = createStructuredSelector({
-  tag: getTag,
-  groups: getGroups,
-  currentPage: getCurrentPage,
-  endReached: getEndReached,
-  fetching: getFetching,
-});
-
 
 const mapDispatchToProps = {
   switchTag: groupActions.switchTag,
