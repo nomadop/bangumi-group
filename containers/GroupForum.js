@@ -6,7 +6,8 @@ import { Link } from 'react-router-native';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
-import { getTopics, getCurrentPage, getEndReached, getTitle, getRefreshing } from '../selectors/forums';
+import FetchingIndicator from '../components/FetchingIndicator';
+import { getTopics, getCurrentPage, getEndReached, getTitle, getRefreshing, getFetching } from '../selectors/forums';
 import { forumActions } from '../actions';
 
 class GroupForum extends React.Component {
@@ -48,19 +49,24 @@ class GroupForum extends React.Component {
 
   keyExtractor = (item) => _.last(item.link.split('/'));
 
+  renderTopics = () => {
+    const { topics, refreshing } = this.props;
+    return <FlatList
+      data={topics}
+      keyExtractor={this.keyExtractor}
+      renderItem={this.renderItem}
+      onEndReached={this.fetchNext}
+      onRefresh={this.refreshForum}
+      refreshing={refreshing}
+    />;
+  };
+
   render() {
-    const { title, topics, history, refreshing } = this.props;
+    const { title, topics, history, fetching } = this.props;
     return (
       <View style={styles.container}>
         <NavigationBar title={title} onBack={() => history.goBack()} />
-        <FlatList
-          data={topics}
-          keyExtractor={this.keyExtractor}
-          renderItem={this.renderItem}
-          onEndReached={this.fetchNext}
-          onRefresh={this.refreshForum}
-          refreshing={refreshing}
-        />
+        { _.isEmpty(topics) && fetching ? <FetchingIndicator /> : this.renderTopics() }
       </View>
     );
   }
@@ -71,7 +77,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'stretch',
-    justifyContent: 'center',
   },
   topic: {
     flex: 1,
@@ -110,6 +115,7 @@ const mapStateToProps = createStructuredSelector({
   currentPage: getCurrentPage,
   endReached: getEndReached,
   title: getTitle,
+  fetching: getFetching,
   refreshing: getRefreshing,
 });
 

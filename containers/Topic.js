@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, ScrollView, RefreshControl, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, RefreshControl, Image } from 'react-native';
 import { createStructuredSelector } from 'reselect';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
+import FetchingIndicator from '../components/FetchingIndicator';
 import { getPost, getReply, getRefreshing, getTitle, getFetching } from '../selectors/topics';
 import { topicActions } from '../actions';
 
@@ -77,19 +78,13 @@ class Topic extends React.Component {
     );
   };
 
-  renderActivityIndicator = () => (
-    <View style={styles.activityIndicator}>
-      <ActivityIndicator />
-    </View>
-  );
-
   render() {
     const { title, post, fetching } = this.props;
 
     return (
       <View style={styles.container}>
         <NavigationBar title={title} onBack={() => this.props.history.goBack()} />
-        { _.isEmpty(post) && fetching ? this.renderActivityIndicator() : this.renderPost() }
+        { _.isEmpty(post) && fetching ? <FetchingIndicator /> : this.renderPost() }
       </View>
     );
   }

@@ -11,4 +11,6 @@ export const getEndReached = createSelector([getGroupState], state => state.endR
 
 export const getTitle = createSelector([getGroupState], state => state.title);
 
+export const getFetching = state => state.forums.fetching;
+
 export const getRefreshing = state => state.forums.refreshing;
