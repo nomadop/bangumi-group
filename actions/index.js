@@ -1,15 +1,15 @@
 import { createActions } from 'redux-actions';
 
-import groupActionMap from './groups';
-import forumActionMap from './forums';
-import topicActionMap from './topics';
-import discoverActionMap from './discover';
+import groupActions from './groups';
+import forumActions from './forums';
+import topicActions from './topics';
+import discoverActions from './discover';
 
 const actions = createActions({
-  GROUPS: groupActionMap,
-  FORUMS: forumActionMap,
-  TOPICS: topicActionMap,
-  DISCOVER: discoverActionMap,
+  GROUPS: groupActions,
+  FORUMS: forumActions,
+  TOPICS: topicActions,
+  DISCOVER: discoverActions,
 });
 
 export const {

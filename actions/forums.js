@@ -1,6 +1,6 @@
-import { fetchActionMap } from './common';
+import { fetchAction } from './common';
 
 export default {
-  FETCH: fetchActionMap,
-  REFRESH: fetchActionMap,
+  FETCH: fetchAction,
+  REFRESH: fetchAction,
 };
