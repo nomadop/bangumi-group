@@ -1,7 +1,10 @@
 import * as _ from 'lodash';
 
-export const fetchAction = {
-  START: _.identity,
-  DONE: _.identity,
-  FAIL: _.identity,
-};
+export function identityActions() {
+  return Array.apply(null, arguments).reduce((actions, action) => ({
+    ...actions,
+    [action]: _.identity,
+  }), {});
+}
+
+export const fetchAction = identityActions('START', 'DONE', 'FAIL');

@@ -1,8 +1,6 @@
-import * as _ from 'lodash';
-
-import { fetchAction } from './common';
+import { identityActions, fetchAction } from './common';
 
 export default {
   FETCH: fetchAction,
-  SWITCH_TAG: _.identity,
+  ...identityActions('SWITCH_TAG'),
 };
