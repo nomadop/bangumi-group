@@ -1,12 +1,15 @@
 import React from 'react';
 import { Dimensions, Image } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class ResizedImage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { height: 0 };
+    this.state = {
+      width: deviceWidth,
+      height: 0,
+    };
   }
 
   componentDidMount() {
@@ -14,8 +17,10 @@ class ResizedImage extends React.Component {
     Image.getSize(
       this.props.source.uri,
       (srcWidth, srcHeight) => {
-        const ratio = Math.min((width - offset) / srcWidth, height / srcHeight);
-        this.setState({ height: srcHeight * ratio });
+        const ratio = Math.min((deviceWidth - offset) / srcWidth, deviceHeight / srcHeight);
+        const width = ratio >= 1 ? srcWidth : srcWidth * ratio;
+        const height = ratio >= 1 ? srcHeight : srcHeight * ratio;
+        this.setState({ width, height });
       },
       error => console.log(error)
     );
@@ -25,14 +30,11 @@ class ResizedImage extends React.Component {
   }
 
   render() {
-    const { source, offset } = this.props;
+    const { source } = this.props;
     return (
       <Image
         source={{ uri: source.uri }}
-        style={{
-          width: width - offset,
-          height: this.state.height
-        }}
+        style={this.state}
         resizeMode='cover'
       />
     );
