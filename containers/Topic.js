@@ -1,12 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, ScrollView, RefreshControl, Image } from 'react-native';
+import decode from 'unescape';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
 import FetchingIndicator from '../components/FetchingIndicator';
+import ResizedImage from '../components/ResizedImage';
 import { topics as mapStateToProps } from '../selectors';
 import { topics as topicActions } from '../actions';
+import { text, getAttribute } from '../utils/himalaya';
+import { getImageUri } from '../utils/parser';
 
 class Topic extends React.Component {
   componentDidMount() {
@@ -18,6 +22,23 @@ class Topic extends React.Component {
     const { match, refreshTopic } = this.props;
     refreshTopic(match.params.id);
   };
+
+  renderContentRow = (node, key) => {
+    if (node.type === 'text') {
+      return <Text key={key}>{decode(node.content.trim())}</Text>;
+    } else if (node.tagName === 'img') {
+      const src = getAttribute(node, 'src');
+      return <ResizedImage key={key} source={{ uri: getImageUri(src) }} offset={16} />
+    } else if (!_.isEmpty(node.children)) {
+      return <Text key={key}>{text(node.children).trim()}</Text>;
+    }
+  };
+
+  renderContent = (content, prefix) => (
+    <View style={styles.content}>
+      {content.children.map((node, index) => this.renderContentRow(node, `${prefix}_content_${index}`))}
+    </View>
+  );
 
   renderReplyContent = (reply) => (
     <View style={styles.replyContent}>
@@ -54,7 +75,7 @@ class Topic extends React.Component {
 
   renderPost = () => {
     const { post, reply, refreshing } = this.props;
-    return (
+    return _.isEmpty(post) ? <View /> : (
       <ScrollView refreshControl={<RefreshControl
         refreshing={refreshing}
         onRefresh={this.refreshTopic}
@@ -70,7 +91,7 @@ class Topic extends React.Component {
               </Text>
             </View>
           </View>
-          <Text style={styles.content}>{post.content}</Text>
+          { this.renderContent(post.content, 'post') }
         </View>
         { reply.map(this.renderReply) }
       </ScrollView>

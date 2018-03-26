@@ -1,3 +1,4 @@
+import decode from 'unescape';
 import * as _ from 'lodash';
 
 export const search = (json, predicates) => _.flatMap(json, node => (
@@ -8,7 +9,7 @@ export const search = (json, predicates) => _.flatMap(json, node => (
 
 const textReducer = (str, node) => {
   if (node.type === 'text') {
-    return str + node.content;
+    return str + decode(node.content);
   }
 
   if (node.tagName === 'br') {

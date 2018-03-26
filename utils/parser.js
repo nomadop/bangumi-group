@@ -1,6 +1,17 @@
 import { parse } from 'himalaya';
+import * as _ from 'lodash';
 
 import { search, text, hasClass, withTag, getAttribute, hasAttribute } from '../utils/himalaya';
+
+export const getImageUri = (image) => {
+  if (_.startsWith(image, 'http')) {
+    return image;
+  } else if (_.startsWith(image, '//')) {
+    return `http:${image}`;
+  } else if (_.startsWith(image, '/')) {
+    return `http://bangumi.tv${image}`;
+  }
+};
 
 export const parseGroups = html => {
   const json = parse(html);
@@ -40,9 +51,8 @@ export const parseTopic = html => {
       avatar: getAvatar(post),
       author: text(search(post.children, [hasClass('inner'), withTag('strong')])),
       tip: text(search(post.children, [hasClass('inner'), hasClass('tip_j')])),
-      content: text(search(post.children, [hasClass('topic_content')])).trim(),
+      content: search(post.children, [hasClass('topic_content')])[0],
       reInfo: text(search(post.children, [hasClass('re_info')])),
-      image: search(post.children, [hasClass('topic_content'), withTag('img')]).map(img => getAttribute(img, 'src')),
     },
     reply: search(json, [hasClass('row_reply')]).map(row => ({
       id: getAttribute(row, 'id'),
