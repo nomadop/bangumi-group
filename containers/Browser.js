@@ -8,15 +8,20 @@ import { browser as browserActions } from '../actions';
 import NavigationBar from '../components/NavigationBar';
 
 const Browser = (props) => {
-  const { history, uri, title, loadStart, loadDone, setTitle } = props;
+  const { history, uri, title, loading, loadStart, loadDone, setTitle } = props;
   const handleMessage = (event) => {
+    this.canGoBack = event.nativeEvent.canGoBack;
     setTitle(event.nativeEvent.data);
     loadDone();
   };
+  const handleBack = () => (
+    this.canGoBack ? (!loading && this.webView.injectJavaScript('window.history.back()')) : history.goBack()
+  );
   return (
     <View style={styles.container}>
-      <NavigationBar title={title} onBack={() => history.goBack()} />
+      <NavigationBar title={title} onBack={handleBack} />
       <WebView
+        ref={ component => this.webView = component }
         source={{ uri }}
         onLoadStart={loadStart}
         onLoadEnd={loadDone}
