@@ -23,14 +23,26 @@ class Topic extends React.Component {
     refreshTopic(match.params.id);
   };
 
+  getImageOffset = key => {
+    if (_.startsWith(key, 'post')) {
+      return 16;
+    } else if (_.startsWith(key, 'reply')) {
+      return 64;
+    } else {
+      return 100;
+    }
+  };
+
+  getReplyType = reInfo => /^#\d*-\d*/.test(reInfo) ? 'subReply' : 'reply';
+
   renderContentRow = (node, key) => {
     if (node.type === 'text') {
       return <Text key={key}>{decode(node.content.trim())}</Text>;
     } else if (node.tagName === 'img') {
       const src = getAttribute(node, 'src');
-      return <ResizedImage key={key} source={{ uri: getImageUri(src) }} offset={16} />
+      return <ResizedImage key={key} source={{ uri: getImageUri(src) }} offset={this.getImageOffset(key)} />
     } else if (!_.isEmpty(node.children)) {
-      return <Text key={key}>{text(node.children).trim()}</Text>;
+      return node.children.map((subNode, index) => this.renderContentRow(subNode, `${key}_${index}`));
     }
   };
 
@@ -47,7 +59,7 @@ class Topic extends React.Component {
         {reply.author}
         <Text style={styles.tip}>{reply.tip}</Text>
       </Text>
-      <Text style={styles.content}>{reply.content}</Text>
+      { this.renderContent(reply.content, `${this.getReplyType(reply.reInfo)}_${reply.id}`) }
       { (reply.subReply || []).map(this.renderSubReply) }
     </View>
   );
