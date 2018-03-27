@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { NativeRouter, Route } from 'react-router-native';
 import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
@@ -11,6 +11,7 @@ import Groups from './containers/Groups';
 import GroupForum from './containers/GroupForum';
 import Topic from './containers/Topic';
 import Discover from './containers/Discover';
+import Browser from './containers/Browser';
 import reducers from './reducers';
 import epics from './epics';
 
@@ -30,7 +31,8 @@ export default class App extends React.Component {
             <Route exact path="/" component={Groups} />
             <Route exact path="/discover" component={Discover} />
             <Route exact path="/group/:name" component={GroupForum} />
-            <Route path="/group/topic/:id" component={Topic} />
+            <Route exact path="/group/topic/:id" component={Topic} />
+            <Route exact path="/browser" component={Browser} />
           </View>
         </NativeRouter>
       </Provider>

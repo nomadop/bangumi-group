@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, ScrollView, RefreshControl, Image } from 'react-native';
+import { Link } from 'react-router-native';
 import decode from 'unescape';
 import * as _ from 'lodash';
 
@@ -8,7 +9,7 @@ import NavigationBar from '../components/NavigationBar';
 import FetchingIndicator from '../components/FetchingIndicator';
 import ResizedImage from '../components/ResizedImage';
 import { topics as mapStateToProps } from '../selectors';
-import { topics as topicActions } from '../actions';
+import { topics as topicActions, browser as browserActions } from '../actions';
 import { text, getAttribute } from '../utils/himalaya';
 import { getImageUri } from '../utils/parser';
 
@@ -41,6 +42,14 @@ class Topic extends React.Component {
     } else if (node.tagName === 'img') {
       const src = getAttribute(node, 'src');
       return <ResizedImage key={key} source={{ uri: getImageUri(src) }} offset={this.getImageOffset(key)} />
+    } else if (node.tagName === 'a') {
+      return (
+        <Link key={key} to="/browser" onPress={() => this.props.setUri(getAttribute(node, 'href'))}>
+          <View>
+            {node.children.map((subNode, index) => this.renderContentRow(subNode, `${key}_${index}`))}
+          </View>
+        </Link>
+      )
     } else if (!_.isEmpty(node.children)) {
       return node.children.map((subNode, index) => this.renderContentRow(subNode, `${key}_${index}`));
     }
@@ -196,6 +205,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   fetchTopic: topicActions.fetch.start,
   refreshTopic: topicActions.refresh.start,
+  setUri: browserActions.setUri,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Topic);
