@@ -14,21 +14,6 @@ import { text, getAttribute } from '../utils/himalaya';
 import { getImageUri } from '../utils/parser';
 
 class Topic extends React.Component {
-  componentDidMount() {
-    this.fetchData(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.fetchData(nextProps);
-  }
-
-  fetchData = (props) => {
-    const { match, post, fetchTopic } = props;
-    if (_.isEmpty(post)) {
-      fetchTopic(match.params.id);
-    }
-  };
-
   refreshTopic = () => {
     const { match, refreshTopic } = this.props;
     refreshTopic(match.params.id);

@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux';
 
 import groups from './groups';
 import forums from './forums';
@@ -12,4 +13,5 @@ export default combineReducers({
   topics,
   discover,
   browser,
+  router: routerReducer,
 });
