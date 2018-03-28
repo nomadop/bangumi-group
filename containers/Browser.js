@@ -16,6 +16,13 @@ class Browser extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    const { loading, loadDone } = this.props;
+    if (loading) {
+      loadDone();
+    }
+  }
+
   injectJavaScript = (code) => {
     const { loading } = this.props;
     if (!loading) {
