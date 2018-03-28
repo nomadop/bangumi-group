@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs/Observable';
+import { createMatchSelector } from 'react-router-redux';
 import * as _ from 'lodash';
 
 import { topics as topicActions } from '../actions';
@@ -28,13 +29,11 @@ const refreshEpic = action$ => action$
       .catch(error => Observable.of(topicActions.refresh.fail(error)))
   );
 
-const routerPathRegex = /^\/group\/topic\/(\d+)$/;
+const matchPath = createMatchSelector('/group/topic/:id');
 const fetchWhenFirstLoadEpic = (action$, store) => action$
-  .filter(({ type, payload }) => (type === '@@router/LOCATION_CHANGE' && routerPathRegex.test(payload.pathname)))
-  .map(({ payload }) => payload.pathname.match(routerPathRegex)[1])
-  .switchMap(id => (
-    _.isEmpty(getPost(store.getState(), { match: { params: { id } } })) ?
-      Observable.of(topicActions.fetch.start(id)) : Observable.empty()
-  ));
+  .ofType('@@router/LOCATION_CHANGE')
+  .map(({ payload }) => matchPath({ router: { location: payload } }))
+  .filter(match => match && _.isEmpty(getPost(store.getState(), { match })))
+  .map(match => topicActions.fetch.start(match.params.id));
 
 export default [fetchEpic, refreshEpic, fetchWhenFirstLoadEpic];
