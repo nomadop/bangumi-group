@@ -15,9 +15,19 @@ import { getImageUri } from '../utils/parser';
 
 class Topic extends React.Component {
   componentDidMount() {
-    const { match, fetchTopic } = this.props;
-    fetchTopic(match.params.id);
+    this.fetchData(this.props);
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.fetchData(nextProps);
+  }
+
+  fetchData = (props) => {
+    const { match, post, fetchTopic } = props;
+    if (_.isEmpty(post)) {
+      fetchTopic(match.params.id);
+    }
+  };
 
   refreshTopic = () => {
     const { match, refreshTopic } = this.props;
@@ -36,20 +46,30 @@ class Topic extends React.Component {
 
   getReplyType = reInfo => /^#\d*-\d*/.test(reInfo) ? 'subReply' : 'reply';
 
+  renderContentLink = (node, key) => {
+    const href = getAttribute(node, 'href');
+    const match = href.match(/(\/group\/topic\/\d+)/);
+    const to = match ? match[1] : '/browser';
+    const onPress = match ? _.noop : () => this.props.setUri(href);
+    return (
+      <Link key={key} to={to} onPress={onPress} style={styles.link}>
+        <View>
+          {node.children.map((subNode, index) => this.renderContentRow(subNode, `${key}_${index}`))}
+        </View>
+      </Link>
+    );
+  };
+
   renderContentRow = (node, key) => {
     if (node.type === 'text') {
-      return <Text key={key}>{decode(node.content.trim())}</Text>;
+      return <Text key={key} style={styles.contentText}>{decode(node.content.trim())}</Text>;
+    } else if (node.tagName === 'br') {
+      return <View key={key} style={styles.lineBreak} />
     } else if (node.tagName === 'img') {
       const src = getAttribute(node, 'src');
       return <ResizedImage key={key} source={{ uri: getImageUri(src) }} offset={this.getImageOffset(key)} />
     } else if (node.tagName === 'a') {
-      return (
-        <Link key={key} to="/browser" onPress={() => this.props.setUri(getAttribute(node, 'href'))}>
-          <View>
-            {node.children.map((subNode, index) => this.renderContentRow(subNode, `${key}_${index}`))}
-          </View>
-        </Link>
-      )
+      return this.renderContentLink(node, key);
     } else if (!_.isEmpty(node.children)) {
       return node.children.map((subNode, index) => this.renderContentRow(subNode, `${key}_${index}`));
     }
@@ -162,6 +182,19 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  contentText: {
+    lineHeight: 22,
+  },
+  lineBreak: {
+    width: '100%',
+    height: 16,
+  },
+  link: {
+    borderBottomColor: '#00ADEF',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   reInfo: {
     color: '#AAA',
