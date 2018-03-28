@@ -16,19 +16,19 @@ class Browser extends React.Component {
     };
   }
 
-  handleMessage = (event) => {
-    const { loadDone, setTitle } = this.props;
-    this.setState({ ...event.nativeEvent });
-    setTitle(event.nativeEvent.data);
-    loadDone();
-  };
-
   handleBack = () => {
     const { history, loading } = this.props;
     const { canGoBack } = this.state;
     return (
       canGoBack ? (!loading && this.webView.injectJavaScript('window.history.back()')) : history.goBack()
     );
+  };
+
+  handleLoadEnd = (event) => {
+    const { loadDone, setTitle } = this.props;
+    this.setState({ ...event.nativeEvent });
+    setTitle(event.nativeEvent.title);
+    loadDone();
   };
 
   renderRightTitle = () => {
@@ -43,7 +43,7 @@ class Browser extends React.Component {
   };
 
   render() {
-    const { uri, title, loadStart, loadDone } = this.props;
+    const { uri, title, loadStart } = this.props;
     return (
       <View style={styles.container}>
         <NavigationBar title={title} onBack={this.handleBack} renderRightTitle={this.renderRightTitle} />
@@ -51,9 +51,7 @@ class Browser extends React.Component {
           ref={ component => this.webView = component }
           source={{ uri }}
           onLoadStart={loadStart}
-          onLoadEnd={loadDone}
-          injectedJavaScript="window.postMessage(document.title)"
-          onMessage={this.handleMessage}
+          onLoadEnd={this.handleLoadEnd}
           startInLoadingState
         />
       </View>
