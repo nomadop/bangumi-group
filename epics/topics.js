@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import { topics as topicActions } from '../actions';
 import { fetchTopic } from '../utils/api';
 import { getPost } from '../selectors/topics';
+import { TOPIC_PATH, LOCATION_CHANGE_ACTION } from '../constants';
 
 const fetchEpic = action$ => action$
   .ofType(topicActions.fetch.start)
@@ -29,9 +30,9 @@ const refreshEpic = action$ => action$
       .catch(error => Observable.of(topicActions.refresh.fail(error)))
   );
 
-const matchPath = createMatchSelector('/group/topic/:id');
+const matchPath = createMatchSelector(TOPIC_PATH);
 const fetchWhenFirstLoadEpic = (action$, store) => action$
-  .ofType('@@router/LOCATION_CHANGE')
+  .ofType(LOCATION_CHANGE_ACTION)
   .map(({ payload }) => matchPath({ router: { location: payload } }))
   .filter(match => match && _.isEmpty(getPost(store.getState(), { match })))
   .map(match => topicActions.fetch.start(match.params.id));

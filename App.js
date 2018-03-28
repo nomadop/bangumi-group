@@ -16,6 +16,7 @@ import Discover from './containers/Discover';
 import Browser from './containers/Browser';
 import reducers from './reducers';
 import epics from './epics';
+import { PATHS } from './constants';
 
 const history = createHistory({
   getUserConfirmation: NativeRouter.defaultProps.getUserConfirmation
@@ -34,11 +35,11 @@ export default class App extends React.Component {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <View style={styles.container}>
-            <Route exact path="/" component={Groups} />
-            <Route exact path="/discover" component={Discover} />
-            <Route exact path="/group/:name" component={GroupForum} />
-            <Route exact path="/group/topic/:id" component={Topic} />
-            <Route exact path="/browser" component={Browser} />
+            <Route exact path={PATHS.HOME} component={Groups} />
+            <Route exact path={PATHS.DISCOVER} component={Discover} />
+            <Route exact path={PATHS.FORUM} component={GroupForum} />
+            <Route exact path={PATHS.TOPIC} component={Topic} />
+            <Route exact path={PATHS.BROWSER} component={Browser} />
           </View>
         </ConnectedRouter>
       </Provider>

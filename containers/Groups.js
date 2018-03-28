@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import NavigationBar from '../components/NavigationBar';
 import { groups as mapStateToProps } from '../selectors';
 import { groups as groupActions } from '../actions';
+import { PATHS } from '../constants';
 
 export const GROUP_TAGS = ['all', 'AC', 'Game', 'Tech', 'Life'];
 
@@ -67,7 +68,7 @@ class Groups extends React.Component {
   );
 
   renderRightTitle = () => (
-    <Link to="/discover" style={styles.discover}>
+    <Link to={PATHS.DISCOVER} style={styles.discover}>
       <Text>Discover</Text>
     </Link>
   );

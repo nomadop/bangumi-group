@@ -12,6 +12,7 @@ import { topics as mapStateToProps } from '../selectors';
 import { topics as topicActions, browser as browserActions } from '../actions';
 import { text, getAttribute } from '../utils/himalaya';
 import { getImageUri } from '../utils/parser';
+import { PATHS } from '../constants';
 
 class Topic extends React.Component {
   refreshTopic = () => {
@@ -34,7 +35,7 @@ class Topic extends React.Component {
   renderContentLink = (node, key) => {
     const href = getAttribute(node, 'href');
     const match = href.match(/(\/group\/topic\/\d+)/);
-    const to = match ? match[1] : '/browser';
+    const to = match ? match[1] : PATHS.BROWSER;
     const onPress = match ? _.noop : () => this.props.setUri(href);
     return (
       <Link key={key} to={to} onPress={onPress} style={styles.link}>
