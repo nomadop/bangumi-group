@@ -222,7 +222,6 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = {
-  fetchTopic: topicActions.fetch.start,
   refreshTopic: topicActions.refresh.start,
   setUri: browserActions.setUri,
 };
