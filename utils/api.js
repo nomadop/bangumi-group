@@ -1,17 +1,11 @@
 import { parseGroups, parseForum, parseTopic, parseDiscover } from './parser';
 
-export const fetchGroups = (tag, page) => fetch(`http://bangumi.tv/group/category/${tag}?page=${page}`)
-  .then(response => response.text())
-  .then(parseGroups);
+const fetchHTML = (url, parser) => fetch(url).then(response => response.text()).then(parser);
 
-export const fetchForum = (group, page) => fetch(`http://bangumi.tv/group/${group}/forum?page=${page}`)
-  .then(response => response.text())
-  .then(parseForum);
+export const fetchGroups = (tag, page) => fetchHTML(`http://bangumi.tv/group/category/${tag}?page=${page}`, parseGroups);
 
-export const fetchTopic = id => fetch(`http://bangumi.tv/group/topic/${id}`)
-  .then(response => response.text())
-  .then(parseTopic);
+export const fetchForum = (group, page) => fetchHTML(`http://bangumi.tv/group/${group}/forum?page=${page}`, parseForum);
 
-export const fetchDiscover = () => fetch(`http://bangumi.tv/group/discover`)
-  .then(response => response.text())
-  .then(parseDiscover);
+export const fetchTopic = id => fetchHTML(`http://bangumi.tv/group/topic/${id}`, parseTopic);
+
+export const fetchDiscover = () => fetchHTML(`http://bangumi.tv/group/discover`, parseDiscover);
