@@ -8,6 +8,6 @@ export const ofLocationChange = path => source => Observable.create(
   subscriber => source
     .ofType(LOCATION_CHANGE_ACTION)
     .map(({ payload }) => createMatchSelector(path)({ router: { location: payload } }))
-    .filter(_.identity)
+    .filter(_.isPlainObject)
     .subscribe(subscriber)
 );

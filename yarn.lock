@@ -2883,6 +2883,10 @@ hawk@~6.0.2:
     hoek "4.x.x"
     sntp "2.x.x"
 
+he@^1.1.1:
+  version "1.1.1"
+  resolved "http://registry.npm.taobao.org/he/download/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
+
 himalaya@^1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/himalaya/download/himalaya-1.0.1.tgz#6099481afea060b8f0b85477e757c35e4afb1278"
@@ -6610,12 +6614,6 @@ ultron@1.0.x:
 ultron@~1.1.0:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/ultron/download/ultron-1.1.1.tgz#9fe1536a10a664a65266a1e3ccf85fd36302bc9c"
-
-unescape@^1.0.1:
-  version "1.0.1"
-  resolved "http://registry.npm.taobao.org/unescape/download/unescape-1.0.1.tgz#956e430f61cad8a4d57d82c518f5e6cc5d0dda96"
-  dependencies:
-    extend-shallow "^2.0.1"
 
 union-value@^1.0.0:
   version "1.0.0"

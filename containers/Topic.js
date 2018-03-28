@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, ScrollView, RefreshControl, Image } from 'react-native';
 import { Link } from 'react-router-native';
-import decode from 'unescape';
+import he from 'he';
 import * as _ from 'lodash';
 
 import NavigationBar from '../components/NavigationBar';
@@ -48,7 +48,7 @@ class Topic extends React.Component {
 
   renderContentRow = (node, key) => {
     if (node.type === 'text') {
-      return <Text key={key} style={styles.contentText}>{decode(node.content.trim())}</Text>;
+      return <Text key={key} style={styles.contentText}>{he.decode(node.content.trim())}</Text>;
     } else if (node.tagName === 'br') {
       return <View key={key} style={styles.lineBreak} />
     } else if (node.tagName === 'img') {

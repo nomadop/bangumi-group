@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "expo": "^25.0.0",
+    "he": "^1.1.1",
     "himalaya": "^1.0.1",
     "history": "^4.7.2",
     "lodash": "^4.17.5",
@@ -33,7 +34,6 @@
     "redux-logger": "^3.0.6",
     "redux-observable": "^0.18.0",
     "reselect": "^3.0.1",
-    "rxjs": "^5.5.7",
-    "unescape": "^1.0.1"
+    "rxjs": "^5.5.7"
   }
 }

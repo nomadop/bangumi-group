@@ -45,9 +45,8 @@ class Browser extends React.Component {
 
   renderRightTitle = () => {
     const { canGoForward } = this.state;
-    const handlePress = () => this.injectJavaScript('window.history.forward()');
     return canGoForward ? (
-      <TouchableOpacity onPress={handlePress} style={styles.rightTitle}>
+      <TouchableOpacity onPress={() => this.injectJavaScript('window.history.forward()')} style={styles.rightTitle}>
         <Text>Forward</Text>
       </TouchableOpacity>
     ) : <View />;
