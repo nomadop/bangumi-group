@@ -16,12 +16,17 @@ class Browser extends React.Component {
     };
   }
 
+  injectJavaScript = (code) => {
+    const { loading } = this.props;
+    if (!loading) {
+      this.webView.injectJavaScript(code);
+    }
+  };
+
   handleBack = () => {
-    const { history, loading } = this.props;
+    const { history } = this.props;
     const { canGoBack } = this.state;
-    return (
-      canGoBack ? (!loading && this.webView.injectJavaScript('window.history.back()')) : history.goBack()
-    );
+    return canGoBack ? this.injectJavaScript('window.history.back()') : history.goBack();
   };
 
   handleLoadEnd = (event) => {
@@ -32,9 +37,8 @@ class Browser extends React.Component {
   };
 
   renderRightTitle = () => {
-    const { loading } = this.props;
     const { canGoForward } = this.state;
-    const handlePress = () => (!loading && this.webView.injectJavaScript('window.history.forward()'));
+    const handlePress = () => this.injectJavaScript('window.history.forward()');
     return canGoForward ? (
       <TouchableOpacity onPress={handlePress} style={styles.rightTitle}>
         <Text>Forward</Text>
