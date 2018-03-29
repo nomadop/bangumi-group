@@ -14,23 +14,23 @@ import { text, getAttribute } from '../utils/himalaya';
 import { getImageUri } from '../utils/parser';
 import { PATHS } from '../constants';
 
+const getImageOffset = key => {
+  if (_.startsWith(key, 'post')) {
+    return 16;
+  } else if (_.startsWith(key, 'reply')) {
+    return 64;
+  } else {
+    return 100;
+  }
+};
+
+const getReplyType = reInfo => /^#\d*-\d*/.test(reInfo) ? 'subReply' : 'reply';
+
 class Topic extends React.Component {
   refreshTopic = () => {
     const { match, refreshTopic } = this.props;
     refreshTopic(match.params.id);
   };
-
-  getImageOffset = key => {
-    if (_.startsWith(key, 'post')) {
-      return 16;
-    } else if (_.startsWith(key, 'reply')) {
-      return 64;
-    } else {
-      return 100;
-    }
-  };
-
-  getReplyType = reInfo => /^#\d*-\d*/.test(reInfo) ? 'subReply' : 'reply';
 
   renderContentLink = (node, key) => {
     const href = getAttribute(node, 'href');
@@ -53,7 +53,7 @@ class Topic extends React.Component {
       return <View key={key} style={styles.lineBreak} />
     } else if (node.tagName === 'img') {
       const src = getAttribute(node, 'src');
-      return <ResizedImage key={key} source={{ uri: getImageUri(src) }} offset={this.getImageOffset(key)} />
+      return <ResizedImage key={key} source={{ uri: getImageUri(src) }} offset={getImageOffset(key)} />
     } else if (node.tagName === 'a') {
       return this.renderContentLink(node, key);
     } else if (!_.isEmpty(node.children)) {
@@ -74,7 +74,7 @@ class Topic extends React.Component {
         {reply.author}
         <Text style={styles.tip}>{reply.tip}</Text>
       </Text>
-      { this.renderContent(reply.content, `${this.getReplyType(reply.reInfo)}_${reply.id}`) }
+      { this.renderContent(reply.content, `${getReplyType(reply.reInfo)}_${reply.id}`) }
       { (reply.subReply || []).map(this.renderSubReply) }
     </View>
   );
