@@ -3,6 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import { groups as groupActions } from '../actions';
 import { fetchGroups } from '../utils/api';
 import { getCurrentPage } from '../selectors/groups';
+import { ofLocationChange } from '../utils/observable';
+import { HOME_PATH } from '../constants/router';
 
 const fetchEpic = action$ => action$
   .ofType(groupActions.fetch.start)
@@ -24,4 +26,9 @@ const fetchAfterSwitchEpic = (action$, store) => action$
   .filter(() => getCurrentPage(store.getState()) === 0)
   .map(({ payload }) => groupActions.fetch.start({ tag: payload, page: 1 }));
 
-export default [fetchEpic, fetchAfterSwitchEpic];
+const fetchWhenFirstLoadEpic = action$ => action$
+  .let(ofLocationChange(HOME_PATH))
+  .take(1)
+  .map(() => groupActions.fetch.start({ tag: 'all', page: 1 }));
+
+export default [fetchEpic, fetchAfterSwitchEpic, fetchWhenFirstLoadEpic];

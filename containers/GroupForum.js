@@ -10,10 +10,6 @@ import { forums as mapStateToProps } from '../selectors';
 import { forums as forumActions } from '../actions';
 
 class GroupForum extends React.Component {
-  componentDidMount() {
-    this.fetchNext();
-  }
-
   fetchNext = () => {
     const { currentPage, endReached, match, fetching, fetchForum } = this.props;
     if (fetching || endReached) {

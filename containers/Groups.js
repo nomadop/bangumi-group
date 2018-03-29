@@ -12,13 +12,6 @@ import { PATHS } from '../constants';
 export const GROUP_TAGS = ['all', 'AC', 'Game', 'Tech', 'Life'];
 
 class Groups extends React.Component {
-  componentDidMount() {
-    const { currentPage } = this.props;
-    if (currentPage === 0) {
-      this.fetchNext();
-    }
-  }
-
   fetchNext = () => {
     const { currentPage, endReached, fetching, fetchGroups, tag } = this.props;
     if (fetching || endReached) {

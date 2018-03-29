@@ -9,13 +9,6 @@ import { discover as discoverActions } from '../actions';
 import { discover as mapStateToProps } from '../selectors';
 
 class Discover extends React.Component {
-  componentDidMount() {
-    const { fetchStatus } = this.props;
-    if (fetchStatus !== 'COMPLETE') {
-      this.fetchData();
-    }
-  }
-
   fetchData = () => {
     const { fetchData, fetching } = this.props;
     if (!fetching) {

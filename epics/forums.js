@@ -3,6 +3,9 @@ import * as _ from 'lodash';
 
 import { forums as forumActions } from '../actions';
 import { fetchForum } from '../utils/api';
+import { ofLocationChange } from '../utils/observable';
+import { FORUM_PATH } from '../constants/router';
+import { getTopics } from '../selectors/forums';
 
 const fetchEpic = action$ => action$
   .ofType(forumActions.fetch.start)
@@ -31,4 +34,9 @@ const refreshEpic = action$ => action$
       .catch(error => Observable.of(forumActions.refresh.fail(error)))
   );
 
-export default [fetchEpic, refreshEpic];
+const fetchWhenFirstLoadEpic = (action$, store) => action$
+  .let(ofLocationChange(FORUM_PATH))
+  .filter(match => _.isEmpty(getTopics(store.getState(), { match })))
+  .map(match => forumActions.fetch.start({ group: match.params.name, page: 1 }));
+
+export default [fetchEpic, refreshEpic, fetchWhenFirstLoadEpic];
